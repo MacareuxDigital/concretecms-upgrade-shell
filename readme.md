@@ -38,7 +38,7 @@ We are the Amazon Web Services APN Technology Partners.
 
 You need to have the server that allows to run the shell script.
 
-1. Obtain the shell script from GitHub. [https://github.com/katzueno/concrete5-upgrade-shell](https://github.com/katzueno/concrete5-upgrade-shell) Or [Click here to download zip file](https://github.com/katzueno/concrete5-upgrade-shell/archive/master.zip)
+1. Obtain the shell script from GitHub. [https://github.com/katzueno/concrete5-upgrade-shell](https://github.com/katzueno/concrete5-upgrade-shell) Or [Click here to download zip file](https://github.com/katzueno/concrete5-upgrade-shell/archive/master.zip).
 1. BACK UP YOUR concrete5 SITE, I highly recommend you to use the backup option. If you're interested in backup only option, you can check out my [concrete5 Backup Shell](https://github.com/katzueno/concrete5-backup-shell)
 1. Add your server config in `concrete5-upgrade.sh`
 1. Upload the `concrete5-upgrade.sh` to your server
@@ -135,7 +135,7 @@ Shows all the help options.
 - --help
 - -h
 
-## 2nd option: Keep older version and working file?
+## 2nd Option: Keep older version and working file?
 
 You MUST specify 1st option if you want to specify 2nd option.
 
@@ -155,7 +155,7 @@ At the end of the process, you can choose to keep or delete those directory.
 - -d
 - --delete
 
-## 3rd option: Run upgrade script or not
+## 3rd Option: Run upgrade script or not
 
 You MUST specify 1st and 2nd option if you want to specify 3rd option.
 
@@ -177,7 +177,7 @@ You should disable the option. OTHERWISE, the upgrade process will stop before
 - --no-upgrade
 
 
-## 4th option
+## 4th Option: Relative or Absolute Path to use
 
 You MUST specify 1st~3rd option if you want to specify 4th option.
 
