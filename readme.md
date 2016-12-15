@@ -94,15 +94,16 @@ sh concrete5-backup.sh --all --do-not-delete --run-upgrade --relative
 
 1st option will determine if you want to back up concrete5 before upgrading
 
-### No backup (default)
+### No backup
 
-- [no option]
 - -n
 - --no-backup
 
-### FILES option
+### FILES option (default)
 
 back up a SQL and the files in application/files
+
+- [no option]
 - --files
 - --file
 - -f
@@ -301,4 +302,10 @@ e.g.
 ## 1.0 (December 15, 2016)
 
 Release
+
+# Special Thanks
+
+https://www.shellcheck.net/
+
+http://patorjk.com/software/taag/#p=display&f=Small&t=concrete5
 
