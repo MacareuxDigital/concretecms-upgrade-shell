@@ -32,7 +32,7 @@ Your feedback is always welcome!
 
 Yes, we use this script to maintain our customers site at dedicated servers and cloud servers such as AWS.
 
-We are the Amazon Web Services APN Technology Partners.
+We are one of the Amazon Web Services APN Technology Partners.
 
 # Set-up
 
