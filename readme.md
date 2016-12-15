@@ -176,27 +176,6 @@ The shell always use absolute path when dumping and zipping files.
 - -a
 - --absolute
 
-## 3rd option
-
-The 3rd option determines if you want to leave the old "concrete" folder or delete it.
-
-### DO NOT DELETE
-
-It doesn't delete the old concrete folder
-
-- [default]
-- -n
-- --do-not-delete
-
-### DELETE OLD concrete folder
-
-It deletes old concrete folder.
-Leave nothing behind.
-
-- -d
-- --delete
-
-
 # VARIABLES TO SET
 
 Once you download the sh file, you must change the where VARIABLES is from line 15
