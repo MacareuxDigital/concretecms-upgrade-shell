@@ -38,6 +38,7 @@ We are the Amazon Web Services APN Technology Partners.
 
 You need to have the server that allows to run the shell script.
 
+1. Obtain the shell script from GitHub. [https://github.com/katzueno/concrete5-upgrade-shell](https://github.com/katzueno/concrete5-upgrade-shell) Or [Click here to download zip file](https://github.com/katzueno/concrete5-upgrade-shell/archive/master.zip)
 1. BACK UP YOUR concrete5 SITE, I highly recommend you to use the backup option. If you're interested in backup only option, you can check out my [concrete5 Backup Shell](https://github.com/katzueno/concrete5-backup-shell)
 1. Add your server config in `concrete5-upgrade.sh`
 1. Upload the `concrete5-upgrade.sh` to your server
