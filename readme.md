@@ -271,7 +271,7 @@ e.g.
 # Future Plan
 
 - Support of TAR
-    - (Actually, you could uncomment line 153 and 160 and comment-out line 154 and 161, if you want tar now.) 
+    - (Actually, you could uncomment line 218 and 226 and comment-out line 217 and 225, if you want tar now.) 
 
 # Version History
 
