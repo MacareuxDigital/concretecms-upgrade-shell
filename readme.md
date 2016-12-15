@@ -34,6 +34,16 @@ Yes, we use this script to maintain our customers site at dedicated servers and 
 
 We are one of the Amazon Web Services APN Technology Partners.
 
+# Future Plan
+
+- I would like your feedback.
+
+# Version History
+
+## 0.9 (December 15, 2016)
+
+Release
+
 # Set-up
 
 You need to have the server that allows to run the shell script.
@@ -46,11 +56,13 @@ You need to have the server that allows to run the shell script.
 
 It's is highly advised that you know what you're doing with this script. You MUST have certain amount of knowledge of what shell script is.
 
-# CAUTION: Backup your site before you run this script. Test upgrade before you apply this to the live production site.
+## CAUTION: Do upgrade test before you apply this to the live production site.
 
 This script first save the SQL dump file onto concrete5 directory. If the script fails, it may leave the SQL file under the server. MAKE SURE to check the server occasionally.
 
-# CAUTION: For concrete5.7.x sites
+I highly recommend that you make the duplicate of your concrete5 site somewhere else to do test upgrade. This script is making you easy to test upgrade. Why not do it now!?
+
+## CAUTION: For concrete5.7.x sites
 
 YOU MUST SPECIFY 1st, 2nd and 3rd option, and you must choose `-n` or `--no-upgrade` option.
 
@@ -291,17 +303,6 @@ If you don't want to enter the password every time, uncomment the MYSQL_PASSWORD
 e.g.
 `MYSQL_PASSWORD="root"`
 
-
-# Future Plan
-
-- Support of TAR
-    - (Actually, you could uncomment line 218 and 226 and comment-out line 217 and 225, if you want tar now.) 
-
-# Version History
-
-## 1.0 (December 15, 2016)
-
-Release
 
 # Special Thanks
 
