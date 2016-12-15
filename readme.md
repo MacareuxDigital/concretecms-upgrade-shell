@@ -12,11 +12,33 @@ This upgrade script supports Ver 8.0.0 and above fully, and 5.7.x partially
 
 This script is licensed under The MIT License. **USE IT AT YOUR OWN RISK.**
 
+# Target
+
+- Someone who is concrete5 site owners who runs many concrete5 sites
+- Someone who's using the servers that accepts SSH access
+- Someone who also runs concrete5 development site and test upgrade before running actual upgrade.
+- Someone who has a idea of what this shell script does for you automatically, and know how dangerious this site could be.
+
+# Credit & Contact
+
+Katz Ueno (concrete5 Japan, Inc)
+
+http://katzueno.com/
+
+http://concrete5.co.jp
+
+Please feel free to create an issue or send me a pull request.
+Your feedback is always welcome!
+
+Yes, we use this script to maintain our customers site at dedicated servers and cloud servers such as AWS.
+
+We are the Amazon Web Services APN Technology Partners.
+
 # Set-up
 
 You need to have the server that allows to run the shell script.
 
-1. BACK UP YOUR concrete5 SITE, I recommend you to use my [concrete5 Backup Shell](https://github.com/katzueno/concrete5-backup-shell)
+1. BACK UP YOUR concrete5 SITE, I highly recommend you to use the backup option. If you're interested in backup only option, you can check out my [concrete5 Backup Shell](https://github.com/katzueno/concrete5-backup-shell)
 1. Add your server config in `concrete5-upgrade.sh`
 1. Upload the `concrete5-upgrade.sh` to your server
 1. Change the file permission `chmod 700 concrete5-upgrade.sh` Or whatever the permission you need to execute the file. But make sure to minimize the permission.
@@ -279,9 +301,3 @@ e.g.
 
 Release
 
-# Contact
-
-http://katzueno.com/
-
-Please feel free to create an issue or send me a pull request.
-Your feedback is always welcome!
