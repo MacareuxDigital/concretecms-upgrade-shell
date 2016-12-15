@@ -74,7 +74,7 @@ elif [ "$1" = "--database" ] || [ "$1" = "-d" ]; then
     ZIP_OPTION="${BASE_PATH}/${FILE_NAME}_${NOW_TIME}.sql"
     DO_BACKUP="yes"
     NO_OPTION="0"
-elif [ "$1" = "--file" ] || [ "$1" = "-files" ] || [ "$1" = "-f" ] || [ "$1" = "" ]; then
+elif [ "$1" = "--file" ] || [ "$1" = "--files" ] || [ "$1" = "-f" ] || [ "$1" = "" ]; then
     echo "c5 Upgrade: You've chosen the DEFAULT FILE option. Now we're backing up the SQL and application/files before upgrading concrete5."
     ZIP_OPTION="${BASE_PATH}/${FILE_NAME}_${NOW_TIME}.sql ${BASE_PATH}/application/files"
     NO_OPTION="0"
@@ -142,11 +142,22 @@ fi
 # ==============================
 
 # ---- Starting shell -----
+echo "                                     #|         ##HH|| ";
+echo " #HH|  #H|  ##H|   #HH| ## H|  #H|  ##HH|  #H|  ##     ";
+echo "##    ## H| ## H| ##    ##H|  ##HH|  #|   ##HH| ##HH|  ";
+echo "##    ## H| ## H| ##    ##    ##     #|   ##        || ";
+echo " #HH|  #H|  ## H|  #HH| ##     #HH|  #H|   #HH| ##HH|  ";
+echo "                                                       ";
+echo "                                 H|                    ";
+echo "## H| ##H|   #HH| ## H| ##|      H|  #H|               ";
+echo "## H| ## H| ## H| ##H|    H|   #HH| ##HH|              ";
+echo "## H| ##H|   #HH| ##    ##H|  ## H| ##                 ";
+echo " #HH| ##       H| ##    ##HH|  #HH|  #HH|              ";
+echo "      ##    ##H|                                       ";
 echo "============================="
 echo "c5 Upgrade: USE IT AT YOUR OWN RISK!"
-echo "===================="
+echo "============================="
 echo "c5 Upgrade:"
-
 
 # ------------------------------
 # Backup function
