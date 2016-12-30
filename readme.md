@@ -12,6 +12,24 @@ This upgrade script supports Ver 8.0.0 and above fully, and 5.7.x partially
 
 This script is licensed under The MIT License. **USE IT AT YOUR OWN RISK.**
 
+# Video Tutorial
+
+Video tutorial is available on YouTube
+
+**English**
+
+https://youtu.be/QTntnUkI5z0
+
+[![concrete5 Upgrade Shell Script](https://img.youtube.com/vi/QTntnUkI5z0/0.jpg)](https://youtu.be/QTntnUkI5z0)
+
+**日本語**
+
+https://youtu.be/zsvnwtnm7_c
+
+
+[![concrete5 アップグレードシェルスクリプト](https://img.youtube.com/vi/zsvnwtnm7_c/0.jpg)](https://youtu.be/zsvnwtnm7_c)
+
+
 # Target
 
 - Someone who is concrete5 site owners who runs many concrete5 sites
