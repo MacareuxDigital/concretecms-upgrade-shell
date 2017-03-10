@@ -32,10 +32,10 @@ https://youtu.be/zsvnwtnm7_c
 
 # Target
 
-- Someone who is concrete5 site owners who runs many concrete5 sites
-- Someone who's using the servers that accepts SSH access
+- Someone who's concrete5 site owners who runs many concrete5 sites.
+- Someone who's using the servers that accepts SSH access.
 - Someone who also runs concrete5 development site and test upgrade before running actual upgrade.
-- Someone who has a idea of what this shell script does for you automatically, and know how dangerious this site could be.
+- Someone who has an idea of what this shell script does for you automatically, and know how dangerous this site could be.
 
 # Credit & Contact
 
@@ -72,7 +72,7 @@ You need to have the server that allows to run the shell script.
 1. Upload the `concrete5-upgrade.sh` to your server
 1. Change the file permission `chmod 700 concrete5-upgrade.sh` Or whatever the permission you need to execute the file. But make sure to minimize the permission.
 
-It's is highly advised that you know what you're doing with this script. You MUST have certain amount of knowledge of what shell script is.
+It's highly advised that you know what you're doing with this script. You MUST have certain amount of knowledge of what shell script is.
 
 ## CAUTION: Do upgrade test before you apply this to the live production site.
 
@@ -86,7 +86,7 @@ YOU MUST SPECIFY 1st, 2nd and 3rd option, and you must choose `-n` or `--no-upgr
 
 If you're using concrete5.7.x, it cannot run upgrade from shell. You will need to run upgrade manually. You may want to change your concrete5 config to allow auto update core option.
 
-- create a text file `application/config/concrete.php` if you haven't done so.
+- Create a text file `application/config/concrete.php` if you haven't done so.
 - Place the following code onto the text file.
 - OR you could use the text file that I prepare under /config/concrete.php
 - Upload the file onto your concrete5 and make sure that you don't generate any error.
@@ -172,7 +172,7 @@ You MUST specify 1st option if you want to specify 2nd option.
 
 When running this shell script, it will create `concrete5_upgrade_working` (default value) directory and save all upgrade related and store older version concrete5 core and language files.
 
-At the end of the process, you can choose to keep or delete those directory.
+At the end of the process, you can choose to keep or delete those directories.
 
 ### Keep directory (default)
 
@@ -232,7 +232,7 @@ The shell always use absolute path when dumping and zipping files.
 
 # VARIABLES TO SET
 
-Once you download the sh file, you must change the where VARIABLES is from line 15
+Once you download the sh file, you must change the where VARIABLES are from line 15
 
 ## NOW_TIME
 
