@@ -61,7 +61,7 @@ fi
 
 if [ "$1" = "--all" ] || [ "$1" = "-a" ]; then
     echo "c5 Upgrade: You've chosen the ALL backup option. Now we're backing up all concrete5 directory files before upgrading concrete5"
-    ZIP_OPTION="${BASE_PATH}/${FILE_NAME}_${NOW_TIME}.sql ${BASE_PATH}"
+    ZIP_OPTION="${BASE_PATH}"
     DO_BACKUP="yes"
     NO_OPTION="0"
 elif [ "$1" = "--packages" ] || [ "$1" = "--package" ] || [ "$1" = "-p" ]; then
