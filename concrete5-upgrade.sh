@@ -17,8 +17,8 @@ set -e
 # ----------
 NOW_TIME=$(date "+%Y%m%d%H%M%S")
 WHERE_IS_CONCRETE5="/var/www/html/www"
-CONCRETE5_PACKAGE_DOWNLOAD="https://www.concrete5.org/download_file/-/view/96765/"
-CONCRETE5_PACKAGE_DIRECTORY_NAME="concrete5-8.2.0"
+CONCRETE5_PACKAGE_DOWNLOAD="http://www.concrete5.org/download_file/-/view/96959/8497/"
+CONCRETE5_PACKAGE_DIRECTORY_NAME="concrete5-8.2.1"
 CONCRETE5_WORKING_DIRECTORY_NAME="concrete5_upgrade_working"
 WHERE_TO_SAVE="/var/www/html/backup"
 FILE_NAME="katzueno"
