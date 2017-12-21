@@ -117,7 +117,7 @@ sh concrete5-upgrade.sh [1st option] [2nd option] [3rd option] [4th option]
 
 ```
 cd /var/www/html
-sh concrete5-backup.sh --all --do-not-delete --run-upgrade --relative
+sh concrete5-upgrade.sh --all --do-not-delete --run-upgrade --relative
 ```
 
 ## 1st Option: Backup option
