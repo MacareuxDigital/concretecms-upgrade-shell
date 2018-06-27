@@ -346,8 +346,12 @@ if [ "$RUN_UPGRADE" = "yes" ]; then
     echo "c5 Upgrade: Executing Upgrade (Version 8 and above)"
     echo "c5 Upgrade: Making sure that CLI is executable"
     chmod u+x ${BASE_PATH}/concrete/bin/concrete5
+    echo "c5 Upgrade: Enable the Maintenance Mode"
+    ${BASE_PATH}/concrete/bin/concrete5 c5:config -g set concrete.maintenance_mode true
     echo "c5 Upgrade: Now running upgrade script"
     ${BASE_PATH}/concrete/bin/concrete5 c5:update
+    echo "c5 Upgrade: Disable the Maintenance Mode"
+    ${BASE_PATH}/concrete/bin/concrete5 c5:config -g set concrete.maintenance_mode false
 else
     echo "c5 Upgrade: ========================================"
     echo "c5 Upgrade:         PLEASE upgrade MANUALLY!!"
