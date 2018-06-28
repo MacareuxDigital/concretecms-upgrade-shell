@@ -266,24 +266,24 @@ It's usually like "concrete5-8.X.X" or "concrete5.7.X.X".
 e.g.
 `CONCRETE5_VERSION="concrete5-8.0.2"`
 
-## CONCRETE5_WORKING_DIRECTORY
+## WHERE_TO_SAVE_BKUP
 
-Default: `concrete5_upgrade_working`
+Enter the server full path where you want to save your backup files to.
+
+e.g.
+`WHERE_TO_SAVE_BKUP="/var/www/html/backup"`
+
+HINT: If you don't know where to find, use "pwd" command to find your current location of the server to find the full path of the server.
+
+## WHERE_TO_SAVE_TEMP
+
+Default: `/var/www/html/concrete5_upgrade_working`
 
 The shell script will create the working directory to store zip file, older concrete5 core and language files.
 You can change the working folder name.
 
 e.g.
-`CONCRETE5_WORKING_DIRECTORY="concrete5_upgrade_working""`
-
-## WHERE_TO_SAVE
-
-Enter the server full path where you want to save your backup files to.
-
-e.g.
-`WHERE_TO_SAVE="/var/www/html/backup"`
-
-HINT: If you don't know where to find, use "pwd" command to find your current location of the server to find the full path of the server.
+`WHERE_TO_SAVE_TEMP="/var/www/html/concrete5_upgrade_working"`
 
 ## FILE_NAME
 

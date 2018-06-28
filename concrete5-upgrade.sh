@@ -17,10 +17,10 @@ set -e
 # ----------
 NOW_TIME=$(date "+%Y%m%d%H%M%S")
 WHERE_IS_CONCRETE5="/var/www/html/www"
+WHERE_TO_SAVE_BKUP="/var/www/html/backup"
+WHERE_TO_SAVE_TEMP="/var/www/html/concrete5_upgrade_working"
 CONCRETE5_PACKAGE_DOWNLOAD="http://www.concrete5.org/download_file/-/view/104344/"
 CONCRETE5_PACKAGE_DIRECTORY_NAME="concrete5-8.4.0"
-CONCRETE5_WORKING_DIRECTORY_NAME="concrete5_upgrade_working"
-WHERE_TO_SAVE="/var/www/html/backup"
 FILE_NAME="katzueno"
 MYSQL_SERVER="localhost"
 MYSQL_NAME="database"
@@ -61,22 +61,22 @@ fi
 
 if [ "$1" = "--all" ] || [ "$1" = "-a" ]; then
     echo "c5 Upgrade: You've chosen the ALL backup option. Now we're backing up all concrete5 directory files before upgrading concrete5"
-    ZIP_OPTION="${BASE_PATH}"
+    TAR_OPTION="${BASE_PATH}"
     DO_BACKUP="yes"
     NO_OPTION="0"
 elif [ "$1" = "--packages" ] || [ "$1" = "--package" ] || [ "$1" = "-p" ]; then
     echo "c5 Upgrade: You've chosen the PACKAGE option. Now we're backing up the SQL, application/files and packages/ folder before upgrading concrete5."
-    ZIP_OPTION="${BASE_PATH}/${FILE_NAME}_${NOW_TIME}.sql ${BASE_PATH}/application/files ${BASE_PATH}/packages"
+    TAR_OPTION="${BASE_PATH}/${FILE_NAME}_${NOW_TIME}.sql ${BASE_PATH}/application/files ${BASE_PATH}/packages"
     DO_BACKUP="yes"
     NO_OPTION="0"
 elif [ "$1" = "--database" ] || [ "$1" = "-d" ]; then
     echo "c5 Upgrade: You've chosen the DATABASE backup option. Now we're only backing up the SQL file before upgrading concrete5."
-    ZIP_OPTION="${BASE_PATH}/${FILE_NAME}_${NOW_TIME}.sql"
+    TAR_OPTION="${BASE_PATH}/${FILE_NAME}_${NOW_TIME}.sql"
     DO_BACKUP="yes"
     NO_OPTION="0"
 elif [ "$1" = "--file" ] || [ "$1" = "--files" ] || [ "$1" = "-f" ] || [ "$1" = "" ]; then
     echo "c5 Upgrade: You've chosen the DEFAULT FILE option. Now we're backing up the SQL and application/files before upgrading concrete5."
-    ZIP_OPTION="${BASE_PATH}/${FILE_NAME}_${NOW_TIME}.sql ${BASE_PATH}/application/files"
+    TAR_OPTION="${BASE_PATH}/${FILE_NAME}_${NOW_TIME}.sql ${BASE_PATH}/application/files"
     NO_OPTION="0"
     DO_BACKUP="yes"
 elif [ "$1" = "--no-backup" ] || [ "$1" = "-n" ]; then
@@ -100,8 +100,8 @@ elif [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     --------------------
     Second Option
     --------------------
-    -n OR --do-not-delete: This is default option. Don't delete '${CONCRETE5_WORKING_DIRECTORY_NAME}' folder
-    -d OR --delete: Delete '${CONCRETE5_WORKING_DIRECTORY_NAME}' where it stored old concrete, languages and other remaining files
+    -n OR --do-not-delete: This is default option. Don't delete '${WHERE_TO_SAVE_TEMP}' folder
+    -d OR --delete: Delete '${WHERE_TO_SAVE_TEMP}' where it stored old concrete, languages and other remaining files
     
     * Second option is optional. You must specify 1st option if you want to specify 2nd option.
     --------------------
@@ -171,12 +171,12 @@ echo "c5 Upgrade:           BACKING UP concrete5 Now"
 echo "c5 Upgrade: ========================================"
 echo "c5 Upgrade:"
 echo "c5 Upgrade: You may need to enter your MySQL password."
-echo "c5 Upgrade: ZIP OPTION: ${ZIP_OPTION}"
+echo "c5 Upgrade: ZIP OPTION: ${TAR_OPTION}"
 
 # ---- Checking Variable -----
 echo "c5 Backup: Checking variables..."
-if [ -z "$WHERE_TO_SAVE" ] || [ "$WHERE_TO_SAVE" = " " ]; then
-    echo "c5 Backup ERROR: WHERE_TO_SAVE variable is not set"
+if [ -z "$WHERE_TO_SAVE_BKUP" ] || [ "$WHERE_TO_SAVE_BKUP" = " " ]; then
+    echo "c5 Backup ERROR: WHERE_TO_SAVE_BKUP variable is not set"
     exit
 fi
 if [ -z "$WHERE_IS_CONCRETE5" ] || [ "$WHERE_IS_CONCRETE5" = " " ]; then
@@ -229,17 +229,16 @@ else
 fi
 
 echo "c5 Backup: Now zipping files..."
-echo "c5 Backup: zip -r ${BASE_PATH}/${FILE_NAME}_${NOW_TIME}.zip ${ZIP_OPTION}"
-zip -r "${BASE_PATH}"/"${FILE_NAME}"_"${NOW_TIME}".zip "${ZIP_OPTION}"
-# tar cfz "${BASE_PATH}"/"${FILE_NAME}"_"${NOW_TIME}".tar "${ZIP_OPTION}"
+echo "c5 Backup: tar -cvzpf ${BASE_PATH}/${FILE_NAME}_${NOW_TIME}.tar.gz ${TAR_OPTION}"
+tar -cvzpf "${BASE_PATH}"/"${FILE_NAME}"_"${NOW_TIME}".tar.gz "${TAR_OPTION}"
 
 echo "c5 Backup: Now removing SQL dump file..."
 rm -f "${BASE_PATH}"/"${FILE_NAME}"_"${NOW_TIME}".sql
 
 echo "c5 Backup: Now moving the backup file(s) to the final destination..."
-echo "${WHERE_TO_SAVE}"
-mv "${BASE_PATH}"/"${FILE_NAME}"_"${NOW_TIME}".zip "${WHERE_TO_SAVE}"
-# mv "${BASE_PATH}"/"${FILE_NAME}"_"${NOW_TIME}".tar "${WHERE_TO_SAVE}"
+echo "${WHERE_TO_SAVE_BKUP}"
+mv "${BASE_PATH}"/"${FILE_NAME}"_"${NOW_TIME}".tar.gz "${WHERE_TO_SAVE_BKUP}"
+# mv "${BASE_PATH}"/"${FILE_NAME}"_"${NOW_TIME}".tar "${WHERE_TO_SAVE_BKUP}"
 
 echo "c5 Backup: Completed!"
 }
@@ -273,15 +272,15 @@ echo "c5 Upgrade:"
 echo "c5 Upgrade: Switching current directory to"
 echo "${WHERE_IS_CONCRETE5}"
 cd ${WHERE_IS_CONCRETE5}
-echo "c5 Upgrade: Creating a working concrete5 directory: ${CONCRETE5_WORKING_DIRECTORY_NAME}"
-mkdir ${BASE_PATH}/${CONCRETE5_WORKING_DIRECTORY_NAME}
+echo "c5 Upgrade: Creating a working concrete5 directory: ${WHERE_TO_SAVE_TEMP}"
+mkdir ${WHERE_TO_SAVE_TEMP}
 echo "c5 Upgrade: Switching to inside of concrete5 directory"
-cd ${BASE_PATH}/${CONCRETE5_WORKING_DIRECTORY_NAME}
+cd ${WHERE_TO_SAVE_TEMP}
 
 if [ "$BASE_PATH" = "." ]; then
     BASE_PATH_NEW_VERSION="${BASE_PATH}"
 else
-    BASE_PATH_NEW_VERSION="${BASE_PATH}/${CONCRETE5_WORKING_DIRECTORY_NAME}"
+    BASE_PATH_NEW_VERSION="${WHERE_TO_SAVE_TEMP}"
 fi
 echo "c5 Upgrade:..."
 echo "c5 Upgrade: BASE_PATH_NEW_VERSION is: ${BASE_PATH_NEW_VERSION} (for debug purpose)"
@@ -314,17 +313,17 @@ echo "c5 Upgrade:..."
 echo "c5 Upgrade: BASE_PATH_APPLICATION is: ${BASE_PATH_APPLICATION} (for debug purpose)"
 echo "c5 Upgrade:..."
 
-echo "c5 Upgrade: Moving old 'languages' folder to inside of '${CONCRETE5_WORKING_DIRECTORY_NAME}' folder as 'languages_old' folder"
-echo "mv ${BASE_PATH_APPLICATION}/languages ${WHERE_IS_CONCRETE5}/${CONCRETE5_WORKING_DIRECTORY_NAME}/languages_old"
-mv ${BASE_PATH_APPLICATION}/languages ${WHERE_IS_CONCRETE5}/${CONCRETE5_WORKING_DIRECTORY_NAME}/languages_old
+echo "c5 Upgrade: Moving old 'languages' folder to inside of '${WHERE_TO_SAVE_TEMP}' folder as 'languages_old' folder"
+echo "mv ${BASE_PATH_APPLICATION}/languages ${WHERE_TO_SAVE_TEMP}/languages_old"
+mv ${BASE_PATH_APPLICATION}/languages ${WHERE_TO_SAVE_TEMP}/languages_old
 echo "c5 Upgrade: Renaming 'languages_new' folder to 'languages' folder"
 echo "mv ${BASE_PATH_APPLICATION}/languages_new mv ${BASE_PATH_APPLICATION}/languages"
 mv ${BASE_PATH_APPLICATION}/languages_new ${BASE_PATH_APPLICATION}/languages
 
 echo "c5 Upgrade: Switching to concrete5 root folder"
 cd ${WHERE_IS_CONCRETE5}
-echo "c5 Upgrade: Moving concrete5 core folder to '/${CONCRETE5_WORKING_DIRECTORY_NAME}/concrete_old'"
-mv ${BASE_PATH}/concrete ${BASE_PATH}/${CONCRETE5_WORKING_DIRECTORY_NAME}/concrete_old
+echo "c5 Upgrade: Moving concrete5 core folder to '/${WHERE_TO_SAVE_TEMP}/concrete_old'"
+mv ${BASE_PATH}/concrete ${WHERE_TO_SAVE_TEMP}/concrete_old
 echo "c5 Upgrade: Renaming 'concrete_new' core folder to 'concrete'"
 mv ${BASE_PATH}/concrete5_new ${BASE_PATH}/concrete
 echo "c5 Upgrade: ..."
@@ -373,15 +372,15 @@ if [ "$DELETE_WORKFILE" = "yes" ]; then
     echo "c5 Upgrade:      DELETING upgrade working directory"
     echo "c5 Upgrade: ========================================"
     echo "c5 Upgrade: Now deleting working folder:"
-    echo "c5 Upgrade: '${WHERE_IS_CONCRETE5}/${CONCRETE5_WORKING_DIRECTORY_NAME}' directory"
-    rm -r ${WHERE_IS_CONCRETE5:?}/${CONCRETE5_WORKING_DIRECTORY_NAME}
+    echo "c5 Upgrade: '${WHERE_TO_SAVE_TEMP}' directory"
+    rm -r ${WHERE_TO_SAVE_TEMP}
 else
     echo "c5 Upgrade: ========================================"
     echo "c5 Upgrade:      PLEASE delete working directory"
     echo "c5 Upgrade: ========================================"
     echo "c5 Upgrade: Update is about to finish"
     echo "c5 Upgrade: Please note that we put all old working file under"
-    echo "c5 Upgrade: '${WHERE_IS_CONCRETE5}/${CONCRETE5_WORKING_DIRECTORY_NAME}' directory"
+    echo "c5 Upgrade: '${WHERE_TO_SAVE_TEMP}' directory"
     echo "c5 Upgrade: Make sure to delete them after you've checked if everything works."
 fi
 
