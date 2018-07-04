@@ -171,7 +171,7 @@ echo "c5 Upgrade:           BACKING UP concrete5 Now"
 echo "c5 Upgrade: ========================================"
 echo "c5 Upgrade:"
 echo "c5 Upgrade: You may need to enter your MySQL password."
-echo "c5 Upgrade: ZIP OPTION: ${TAR_OPTION}"
+echo "c5 Upgrade: TAR OPTION: ${TAR_OPTION}"
 
 # ---- Checking Variable -----
 echo "c5 Backup: Checking variables..."
@@ -273,7 +273,7 @@ echo "c5 Upgrade: Switching current directory to"
 echo "${WHERE_IS_CONCRETE5}"
 cd ${WHERE_IS_CONCRETE5}
 echo "c5 Upgrade: Creating a working concrete5 directory: ${WHERE_TO_SAVE_TEMP}"
-mkdir ${WHERE_TO_SAVE_TEMP}
+mkdir -p ${WHERE_TO_SAVE_TEMP}
 echo "c5 Upgrade: Switching to inside of concrete5 directory"
 cd ${WHERE_TO_SAVE_TEMP}
 
