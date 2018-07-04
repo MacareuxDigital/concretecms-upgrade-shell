@@ -33,8 +33,8 @@ DEV_DB_DATABASE=""
 SITE_NAME="Concrete5"
 WHERE_IS_CONCRETE5="/var/www/vhosts/concrete5"
 
-C5_Version="5.7.5.13"
-CONCRETE5_PACKAGE_DOWNLOAD="http://www.concrete5.org/download_file/-/view/93075/8497/"
+C5_Version="8.4.0"
+CONCRETE5_PACKAGE_DOWNLOAD="http://www.concrete5.org/download_file/-/view/104344/"
 
 # Concrete 5 Download Links
 #   '5.7.5.13'=>'http://www.concrete5.org/download_file/-/view/93075/8497/',
