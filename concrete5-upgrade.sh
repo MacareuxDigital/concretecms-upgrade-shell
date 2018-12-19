@@ -34,7 +34,7 @@ SITE_NAME="Concrete5"
 WHERE_IS_CONCRETE5="/var/www/vhosts/concrete5"
 
 C5_Version="8.4.3"
-CONCRETE5_PACKAGE_DOWNLOAD="http://www.concrete5.org/download_file/-/view/106698/"
+CONCRETE5_PACKAGE_DOWNLOAD="http://www.concrete5.org/download_file/-/view/107738/"
 
 # Concrete 5 Download Links
 #   '5.7.5.13'=>'http://www.concrete5.org/download_file/-/view/93075/8497/',
@@ -52,7 +52,7 @@ CONCRETE5_PACKAGE_DOWNLOAD="http://www.concrete5.org/download_file/-/view/106698
 #    '8.4.0'=>'http://www.concrete5.org/download_file/-/view/104344/'
 #    '8.4.1'=>'http://www.concrete5.org/download_file/-/view/105022/'
 #    '8.4.2'=>'http://www.concrete5.org/download_file/-/view/105477/'
-#    '8.4.3'=>'http://www.concrete5.org/download_file/-/view/106698/'
+#    '8.4.3'=>'http://www.concrete5.org/download_file/-/view/107738/'
 
 # Backup Variables
 WHERE_TO_SAVE="/var/www/vhosts/backups"
