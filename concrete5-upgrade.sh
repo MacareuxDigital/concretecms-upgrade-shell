@@ -786,11 +786,9 @@ update_file_permissions() {
     echo "c5 Upgrade: Updating file folder permissions"
     chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/config
     chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/files
-    chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/files/cache
-    chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/files/incoming
     chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/languages
     chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/concrete
-    chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/packages
+    #chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/packages
 }
 
 install_languages() {
