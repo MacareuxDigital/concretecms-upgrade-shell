@@ -774,6 +774,7 @@ do_upgrade() {
     fi
 
     chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}
+    disable_maintenance_mode
 
     echo "c5 Upgrade: ..."
     echo "c5 Upgrade: ..."
@@ -781,6 +782,10 @@ do_upgrade() {
     echo "c5 Upgrade: Upgrade process completed!"
 }
 
+disable_maintenance_mode() {
+    echo "c5 Upgrade: Disabling maintenance mode"
+    ${WHERE_IS_CONCRETE5}/concrete/bin/concrete5 c5:config -g set concrete.maintenance_mode false
+}
 
 
 do_main_menu
