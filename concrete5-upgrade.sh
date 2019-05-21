@@ -775,6 +775,7 @@ do_upgrade() {
 
     update_file_permissions
     install_languages
+    disable_maintenance_mode
 
     echo "c5 Upgrade: ..."
     echo "c5 Upgrade: ..."
@@ -798,6 +799,10 @@ install_languages() {
 
     echo "c5 Upgrade: Updating all the outdated language files (for the concrete5 core and for all the packages)"
     ${WHERE_IS_CONCRETE5}/concrete/bin/concrete5 c5:language-install --update
+}
+disable_maintenance_mode() {
+    echo "c5 Upgrade: Disabling maintenance mode"
+    ${WHERE_IS_CONCRETE5}/concrete/bin/concrete5 c5:config -g set concrete.maintenance_mode false
 }
 
 
