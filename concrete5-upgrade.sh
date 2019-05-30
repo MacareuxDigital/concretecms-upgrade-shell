@@ -773,7 +773,8 @@ do_upgrade() {
         echo "c5 Upgrade: Make sure to delete them after you've checked if everything works."
     fi
 
-    chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}
+    update_file_permissions
+    install_languages
     disable_maintenance_mode
 
     echo "c5 Upgrade: ..."
@@ -782,6 +783,23 @@ do_upgrade() {
     echo "c5 Upgrade: Upgrade process completed!"
 }
 
+update_file_permissions() {
+    echo "c5 Upgrade: Updating file folder permissions"
+    chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/config
+    chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/files
+    chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/languages
+    chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/concrete
+    #chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/packages
+}
+
+install_languages() {
+    echo "c5 Upgrade: Copying old languages to new languages folder"
+    echo "cp -rf ${WHERE_IS_CONCRETE5}/${CONCRETE5_WORKING_DIRECTORY_NAME}/languages_old/* ${BASE_PATH_APPLICATION}/languages/"
+    cp -rf ${WHERE_IS_CONCRETE5}/${CONCRETE5_WORKING_DIRECTORY_NAME}/languages_old/* ${BASE_PATH_APPLICATION}/languages/
+
+    echo "c5 Upgrade: Updating all the outdated language files (for the concrete5 core and for all the packages)"
+    ${WHERE_IS_CONCRETE5}/concrete/bin/concrete5 c5:language-install --update
+}
 disable_maintenance_mode() {
     echo "c5 Upgrade: Disabling maintenance mode"
     ${WHERE_IS_CONCRETE5}/concrete/bin/concrete5 c5:config -g set concrete.maintenance_mode false
