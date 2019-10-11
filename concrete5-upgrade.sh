@@ -29,6 +29,11 @@ DEV_DB_USERNAME=""
 DEV_DB_PASSWORD=""
 DEV_DB_DATABASE=""
 
+# Backup Variables
+WHERE_TO_SAVE="/var/www/vhosts/backups"
+FILE_NAME="${C5_Version}-upgrade"
+USER_PERMISSIONS="apache:apache"
+
 # Concrete5 Variables
 SITE_NAME="Concrete5"
 WHERE_IS_CONCRETE5="/var/www/vhosts/concrete5"
@@ -58,12 +63,6 @@ CONCRETE5_PACKAGE_DOWNLOAD="https://www.concrete5.org/download_file/-/view/11159
 #    '8.5.0'=>'https://www.concrete5.org/download_file/-/view/109116/8497/'
 #    '8.5.1'=>'https://www.concrete5.org/download_file/-/view/109615/8497/'
 #    '8.5.2'=>'https://www.concrete5.org/download_file/-/view/111592/'
-
-# Backup Variables
-WHERE_TO_SAVE="/var/www/vhosts/backups"
-FILE_NAME="${C5_Version}-upgrade"
-USER_PERMISSIONS="apache:apache"
-
 
 # ==============================
 #
