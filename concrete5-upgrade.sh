@@ -33,7 +33,7 @@ DEV_DB_DATABASE=""
 SITE_NAME="Concrete5"
 WHERE_IS_CONCRETE5="/var/www/vhosts/concrete5"
 
-C5_Version="8.5.2"
+C5_Version="8.5.5"
 CONCRETE5_PACKAGE_DOWNLOAD="https://www.concrete5.org/latest.zip"
 
 # Backup Variables
@@ -42,27 +42,30 @@ FILE_NAME="${C5_Version}-upgrade"
 USER_PERMISSIONS="apache:apache"
 
 # Concrete 5 Download Links
+#    '8.5.5'=>'https://www.concrete5.org/download_file/-/view/115589/'
+#    '8.5.4'=>'https://www.concrete5.org/download_file/-/view/113632/'
+#    '8.5.3'=>'https://www.concrete5.org/download_file/-/view/113591/'
 #    '8.5.2'=>'https://www.concrete5.org/download_file/-/view/111592/'
-#    '8.5.1'=>'https://www.concrete5.org/download_file/-/view/109615/8497/'
-#    '8.5.0'=>'https://www.concrete5.org/download_file/-/view/109116/8497/'
-#    '8.4.5'=>'https://www.concrete5.org/download_file/-/view/108839/8497/'
-#    '8.4.4'=>'https://www.concrete5.org/download_file/-/view/108181/8497/'
+#    '8.5.1'=>'https://www.concrete5.org/download_file/-/view/109615/'
+#    '8.5.0'=>'https://www.concrete5.org/download_file/-/view/109116/'
+#    '8.4.5'=>'https://www.concrete5.org/download_file/-/view/108839/'
+#    '8.4.4'=>'https://www.concrete5.org/download_file/-/view/108181/'
 #    '8.4.3'=>'http://www.concrete5.org/download_file/-/view/106698/'
 #    '8.4.2'=>'http://www.concrete5.org/download_file/-/view/105477/'
 #    '8.4.1'=>'http://www.concrete5.org/download_file/-/view/105022/'
 #    '8.4.0'=>'http://www.concrete5.org/download_file/-/view/104344/'
 #    '8.4.0'=>'http://www.concrete5.org/download_file/-/view/104344/',
-#    '8.3.2'=>'http://www.concrete5.org/download_file/-/view/100595/8497/',
-#    '8.3.1'=>'http://www.concrete5.org/download_file/-/view/99963/8497/',
-#    '8.3.0'=>'http://www.concrete5.org/download_file/-/view/99806/8497/',
-#    '8.2.1'=>'http://www.concrete5.org/download_file/-/view/96959/8497/',
-#    '8.2.0'=>'http://www.concrete5.org/download_file/-/view/96765/8497/',
-#    '8.1.0'=>'http://www.concrete5.org/download_file/-/view/93797/8497/',
-#    '8.0.3'=>'http://www.concrete5.org/download_file/-/view/93074/8497/',
-#    '8.0.2'=>'http://www.concrete5.org/download_file/-/view/92910/8497/',
-#    '8.0.1'=>'http://www.concrete5.org/download_file/-/view/92834/8497/',
-#    '8.0.0'=>'http://www.concrete5.org/download_file/-/view/92663/8497/',
-#    '5.7.5.13'=>'http://www.concrete5.org/download_file/-/view/93075/8497/',
+#    '8.3.2'=>'http://www.concrete5.org/download_file/-/view/100595/',
+#    '8.3.1'=>'http://www.concrete5.org/download_file/-/view/99963/',
+#    '8.3.0'=>'http://www.concrete5.org/download_file/-/view/99806/',
+#    '8.2.1'=>'http://www.concrete5.org/download_file/-/view/96959/',
+#    '8.2.0'=>'http://www.concrete5.org/download_file/-/view/96765/',
+#    '8.1.0'=>'http://www.concrete5.org/download_file/-/view/93797/',
+#    '8.0.3'=>'http://www.concrete5.org/download_file/-/view/93074/',
+#    '8.0.2'=>'http://www.concrete5.org/download_file/-/view/92910/',
+#    '8.0.1'=>'http://www.concrete5.org/download_file/-/view/92834/',
+#    '8.0.0'=>'http://www.concrete5.org/download_file/-/view/92663/',
+#    '5.7.5.13'=>'http://www.concrete5.org/download_file/-/view/93075/',
 
 # ==============================
 #
