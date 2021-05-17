@@ -2,7 +2,7 @@
 #
 # Upgrade Script for Concrete5
 # ----------
-# Version 0.1
+# Version 0.2
 # By Derek Cameron & Katz Ueno
 
 # INSTRUCTION:
@@ -778,7 +778,7 @@ do_upgrade() {
 
     update_file_permissions
     install_languages
-    disable_maintenance_mode
+    # disable_maintenance_mode
 
     echo "c5 Upgrade: ..."
     echo "c5 Upgrade: ..."
@@ -792,7 +792,7 @@ update_file_permissions() {
     chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/files
     chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/languages
     chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/concrete
-    #chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/packages
+    # chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/packages
 }
 
 install_languages() {
