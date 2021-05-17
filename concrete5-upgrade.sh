@@ -777,8 +777,8 @@ do_upgrade() {
     fi
 
     install_languages
-    update_file_permissions
     # disable_maintenance_mode
+    update_file_permissions
 
     echo "c5 Upgrade: ..."
     echo "c5 Upgrade: ..."
