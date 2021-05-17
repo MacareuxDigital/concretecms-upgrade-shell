@@ -776,8 +776,8 @@ do_upgrade() {
         echo "c5 Upgrade: Make sure to delete them after you've checked if everything works."
     fi
 
-    update_file_permissions
     install_languages
+    update_file_permissions
     # disable_maintenance_mode
 
     echo "c5 Upgrade: ..."
