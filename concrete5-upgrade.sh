@@ -39,7 +39,10 @@ CONCRETE5_PACKAGE_DOWNLOAD="https://www.concrete5.org/latest.zip"
 # Backup Variables
 WHERE_TO_SAVE="/var/www/vhosts/backups"
 FILE_NAME="${C5_Version}-upgrade"
+
+# Permissions
 USER_PERMISSIONS="apache:apache"
+DO_SUDO="sudo -u apache " # Make sure to have a space at the end.
 
 # Concrete 5 Download Links
 #    '8.5.5'=>'https://www.concrete5.org/download_file/-/view/115589/'
@@ -742,7 +745,7 @@ do_upgrade() {
         echo "c5 Upgrade: Making sure that CLI is executable"
         chmod u+x ${WHERE_IS_CONCRETE5}/concrete/bin/concrete5
         echo "c5 Upgrade: Now running upgrade script"
-        ${WHERE_IS_CONCRETE5}/concrete/bin/concrete5 c5:update
+        ${DO_SUDO}${WHERE_IS_CONCRETE5}/concrete/bin/concrete5 c5:update
     else
         echo "c5 Upgrade: ========================================"
         echo "c5 Upgrade:         PLEASE upgrade MANUALLY!!"
@@ -801,11 +804,11 @@ install_languages() {
     cp -rf ${WHERE_IS_CONCRETE5}/${CONCRETE5_WORKING_DIRECTORY_NAME}/languages_old/* ${BASE_PATH_APPLICATION}/languages/
 
     echo "c5 Upgrade: Updating all the outdated language files (for the concrete5 core and for all the packages)"
-    ${WHERE_IS_CONCRETE5}/concrete/bin/concrete5 c5:language-install --update
+    ${DO_SUDO}${WHERE_IS_CONCRETE5}/concrete/bin/concrete5 c5:language-install --update
 }
 disable_maintenance_mode() {
     echo "c5 Upgrade: Disabling maintenance mode"
-    ${WHERE_IS_CONCRETE5}/concrete/bin/concrete5 c5:config -g set concrete.maintenance_mode false
+    ${DO_SUDO}${WHERE_IS_CONCRETE5}/concrete/bin/concrete5 c5:config -g set concrete.maintenance_mode false
 }
 
 
