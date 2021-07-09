@@ -34,41 +34,41 @@ SITE_NAME="Concrete5"
 WHERE_IS_CONCRETE5="/var/www/vhosts/concrete5"
 
 C5_Version="8.5.5"
-CONCRETE5_PACKAGE_DOWNLOAD="https://www.concrete5.org/latest.zip"
+CONCRETE5_PACKAGE_DOWNLOAD="https://marketplace.concretecms.com/download_file/-/view/115589/"
+# CONCRETE5_PACKAGE_DOWNLOAD="https://marketplace.concretecms.com/latest.zip"
 
 # Backup Variables
 WHERE_TO_SAVE="/var/www/vhosts/backups"
 FILE_NAME="${C5_Version}-upgrade"
-
 # Permissions
 USER_PERMISSIONS="apache:apache"
 DO_SUDO="sudo -u apache " # Make sure to have a space at the end.
 
 # Concrete 5 Download Links
-#    '8.5.5'=>'https://www.concrete5.org/download_file/-/view/115589/'
-#    '8.5.4'=>'https://www.concrete5.org/download_file/-/view/113632/'
-#    '8.5.3'=>'https://www.concrete5.org/download_file/-/view/113591/'
-#    '8.5.2'=>'https://www.concrete5.org/download_file/-/view/111592/'
-#    '8.5.1'=>'https://www.concrete5.org/download_file/-/view/109615/'
-#    '8.5.0'=>'https://www.concrete5.org/download_file/-/view/109116/'
-#    '8.4.5'=>'https://www.concrete5.org/download_file/-/view/108839/'
-#    '8.4.4'=>'https://www.concrete5.org/download_file/-/view/108181/'
-#    '8.4.3'=>'http://www.concrete5.org/download_file/-/view/106698/'
-#    '8.4.2'=>'http://www.concrete5.org/download_file/-/view/105477/'
-#    '8.4.1'=>'http://www.concrete5.org/download_file/-/view/105022/'
-#    '8.4.0'=>'http://www.concrete5.org/download_file/-/view/104344/'
-#    '8.4.0'=>'http://www.concrete5.org/download_file/-/view/104344/',
-#    '8.3.2'=>'http://www.concrete5.org/download_file/-/view/100595/',
-#    '8.3.1'=>'http://www.concrete5.org/download_file/-/view/99963/',
-#    '8.3.0'=>'http://www.concrete5.org/download_file/-/view/99806/',
-#    '8.2.1'=>'http://www.concrete5.org/download_file/-/view/96959/',
-#    '8.2.0'=>'http://www.concrete5.org/download_file/-/view/96765/',
-#    '8.1.0'=>'http://www.concrete5.org/download_file/-/view/93797/',
-#    '8.0.3'=>'http://www.concrete5.org/download_file/-/view/93074/',
-#    '8.0.2'=>'http://www.concrete5.org/download_file/-/view/92910/',
-#    '8.0.1'=>'http://www.concrete5.org/download_file/-/view/92834/',
-#    '8.0.0'=>'http://www.concrete5.org/download_file/-/view/92663/',
-#    '5.7.5.13'=>'http://www.concrete5.org/download_file/-/view/93075/',
+#    '8.5.5'=>'https://marketplace.concretecms.com/download_file/-/view/115589/'
+#    '8.5.4'=>'https://marketplace.concretecms.com/download_file/-/view/113632/'
+#    '8.5.3'=>'https://marketplace.concretecms.com/download_file/-/view/113591/'
+#    '8.5.2'=>'https://marketplace.concretecms.com/download_file/-/view/111592/'
+#    '8.5.1'=>'https://marketplace.concretecms.com/download_file/-/view/109615/'
+#    '8.5.0'=>'https://marketplace.concretecms.com/download_file/-/view/109116/'
+#    '8.4.5'=>'https://marketplace.concretecms.com/download_file/-/view/108839/'
+#    '8.4.4'=>'https://marketplace.concretecms.com/download_file/-/view/108181/'
+#    '8.4.3'=>'https://marketplace.concretecms.com/download_file/-/view/106698/'
+#    '8.4.2'=>'https://marketplace.concretecms.com/download_file/-/view/105477/'
+#    '8.4.1'=>'https://marketplace.concretecms.com/download_file/-/view/105022/'
+#    '8.4.0'=>'https://marketplace.concretecms.com/download_file/-/view/104344/'
+#    '8.4.0'=>'https://marketplace.concretecms.com/download_file/-/view/104344/',
+#    '8.3.2'=>'https://marketplace.concretecms.com/download_file/-/view/100595/',
+#    '8.3.1'=>'https://marketplace.concretecms.com/download_file/-/view/99963/',
+#    '8.3.0'=>'https://marketplace.concretecms.com/download_file/-/view/99806/',
+#    '8.2.1'=>'https://marketplace.concretecms.com/download_file/-/view/96959/',
+#    '8.2.0'=>'https://marketplace.concretecms.com/download_file/-/view/96765/',
+#    '8.1.0'=>'https://marketplace.concretecms.com/download_file/-/view/93797/',
+#    '8.0.3'=>'https://marketplace.concretecms.com/download_file/-/view/93074/',
+#    '8.0.2'=>'https://marketplace.concretecms.com/download_file/-/view/92910/',
+#    '8.0.1'=>'https://marketplace.concretecms.com/download_file/-/view/92834/',
+#    '8.0.0'=>'https://marketplace.concretecms.com/download_file/-/view/92663/',
+#    '5.7.5.13'=>'https://marketplace.concretecms.com/download_file/-/view/93075/',
 
 # ==============================
 #
@@ -374,7 +374,7 @@ do_prod_db_backup() {
     echo "c5 Backup: Backing up production database to ${WHERE_TO_SAVE}/${SQL_FILE}"
     if [ -n "$PROD_DB_PASSWORD" ]; then
         set +e
-        mysqldump -h ${PROD_DB_HOST} -u ${PROD_DB_USERNAME} --password=${PROD_DB_PASSWORD} --single-transaction --default-character-set=utf8 "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+        mysqldump -h ${PROD_DB_HOST} -u ${PROD_DB_USERNAME} --password=${PROD_DB_PASSWORD} --single-transaction "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
         ret=$?
         if [ "$ret" = 0 ]; then
             echo ""
@@ -382,12 +382,12 @@ do_prod_db_backup() {
         else
             echo "c5 Backup: ERROR: MySQL password failed. You must type MySQL password manually. OR hit ENTER if you want to stop this script now."
             set -e
-            mysqldump -h ${PROD_DB_HOST} -u ${PROD_DB_USERNAME} -p --single-transaction --default-character-set=utf8 "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+            mysqldump -h ${PROD_DB_HOST} -u ${PROD_DB_USERNAME} -p --single-transaction "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
         fi
             set -e
     else
         echo "c5 Backup: Enter the MySQL password..."
-        mysqldump -h ${PROD_DB_HOST} -u ${PROD_DB_USERNAME} -p --single-transaction --default-character-set=utf8 "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+        mysqldump -h ${PROD_DB_HOST} -u ${PROD_DB_USERNAME} -p --single-transaction "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
     fi
 }
 
@@ -649,7 +649,7 @@ do_dev_db_backup() {
     SQL_FILE="${SITE_NAME}_${FILE_NAME}_dev_${NOW_TIME}.sql"
     if [ -n "$DEV_DB_PASSWORD" ]; then
         set +e
-        mysqldump -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} --password=${DEV_DB_PASSWORD} --single-transaction --default-character-set=utf8 "${DEV_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+        mysqldump -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} --password=${DEV_DB_PASSWORD} --single-transaction "${DEV_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
         ret=$?
         if [ "$ret" = 0 ]; then
             echo ""
@@ -657,12 +657,12 @@ do_dev_db_backup() {
         else
             echo "c5 Backup: ERROR: MySQL password failed. You must type MySQL password manually. OR hit ENTER if you want to stop this script now."
             set -e
-            mysqldump -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} -p --single-transaction --default-character-set=utf8 "${DEV_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+            mysqldump -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} -p --single-transaction "${DEV_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
         fi
         set -e
     else
         echo "c5 Backup: Enter the MySQL password..."
-        mysqldump -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} -p --single-transaction --default-character-set=utf8 "${DEV_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+        mysqldump -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} -p --single-transaction "${DEV_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
     fi
 }
 
