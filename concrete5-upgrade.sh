@@ -33,7 +33,7 @@ DEV_DB_DATABASE=""
 SITE_NAME="Concrete5"
 WHERE_IS_CONCRETE5="/var/www/vhosts/concrete5"
 
-C5_Version="8.5.5"
+C5_Version="8.5.6"
 CONCRETE5_PACKAGE_DOWNLOAD="https://www.concretecms.com/download_file/61dab82f-fb01-47bc-8cf1-deffff890224/9"
 # CONCRETE5_PACKAGE_DOWNLOAD="https://marketplace.concretecms.com/latest.zip"
 
