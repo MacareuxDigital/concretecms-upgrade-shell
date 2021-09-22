@@ -34,7 +34,7 @@ SITE_NAME="Concrete5"
 WHERE_IS_CONCRETE5="/var/www/vhosts/concrete5"
 
 C5_Version="8.5.5"
-CONCRETE5_PACKAGE_DOWNLOAD="https://marketplace.concretecms.com/download_file/-/view/115589/"
+CONCRETE5_PACKAGE_DOWNLOAD="https://www.concretecms.com/download_file/61dab82f-fb01-47bc-8cf1-deffff890224/9"
 # CONCRETE5_PACKAGE_DOWNLOAD="https://marketplace.concretecms.com/latest.zip"
 
 # Backup Variables
@@ -45,6 +45,7 @@ USER_PERMISSIONS="apache:apache"
 DO_SUDO="sudo -u apache " # Make sure to have a space at the end.
 
 # Concrete 5 Download Links
+#    '8.5.6'=>'https://www.concretecms.com/download_file/61dab82f-fb01-47bc-8cf1-deffff890224/9'
 #    '8.5.5'=>'https://marketplace.concretecms.com/download_file/-/view/115589/'
 #    '8.5.4'=>'https://marketplace.concretecms.com/download_file/-/view/113632/'
 #    '8.5.3'=>'https://marketplace.concretecms.com/download_file/-/view/113591/'
