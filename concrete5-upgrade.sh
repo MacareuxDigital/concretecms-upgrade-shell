@@ -33,8 +33,18 @@ DEV_DB_DATABASE=""
 SITE_NAME="Concrete5"
 WHERE_IS_CONCRETE5="/var/www/vhosts/concrete5"
 
-C5_Version=$1
-CONCRETE5_PACKAGE_DOWNLOAD=$2
+if [ -z "$1" ]; then
+    C5_Version=$1
+else
+    C5_Version="8.5.6"
+fi
+
+if [ -z "$2" ]; then
+    CONCRETE5_PACKAGE_DOWNLOAD=$2
+else
+    CONCRETE5_PACKAGE_DOWNLOAD="https://www.concretecms.com/download_file/61dab82f-fb01-47bc-8cf1-deffff890224/9"
+fi
+
 # CONCRETE5_PACKAGE_DOWNLOAD="https://marketplace.concretecms.com/latest.zip"
 
 # Backup Variables
