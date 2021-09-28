@@ -2,7 +2,7 @@
 #
 # Upgrade Script for Concrete5
 # ----------
-# Version 0.
+# Version 0.3
 # By Derek Cameron & Katz Ueno
 
 # INSTRUCTION:
