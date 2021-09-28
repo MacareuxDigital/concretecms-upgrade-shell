@@ -1,8 +1,9 @@
 #!/bin/sh
 #
-# Upgrade Script for Concrete5
+# Upgrade Script for Concrete CMS
+# Supports Version 8.x only.
 # ----------
-# Version 0.3
+# Version 1.0
 # By Derek Cameron & Katz Ueno
 
 # INSTRUCTION:
@@ -712,10 +713,6 @@ do_upgrade() {
     rm -r ${BASE_PATH_NEW_VERSION:?}/${CONCRETE5_PACKAGE_DIRECTORY_NAME}
     echo "c5 Upgrade: Moving concrete core folder and rename it as concrete_new folder on concrete5 root directory"
     mv ${BASE_PATH_NEW_VERSION}/concrete ${WHERE_IS_CONCRETE5}/concrete5_new
-    echo "c5 Upgrade: Now Replacing languages file to new languages file."
-    echo "c5 Upgrade: Moving new languages folder as languages_new folder under application folder."
-    echo "mv ${BASE_PATH_NEW_VERSION}/application/languages ${WHERE_IS_CONCRETE5}/application/languages_new"
-    mv ${BASE_PATH_NEW_VERSION}/application/languages ${WHERE_IS_CONCRETE5}/application/languages_new
     echo "c5 Upgrade: Switching to application folder"
     echo "cd ${WHERE_IS_CONCRETE5}/application"
     cd ${WHERE_IS_CONCRETE5}/application
@@ -727,10 +724,7 @@ do_upgrade() {
 
     echo "c5 Upgrade: Moving old 'languages' folder to inside of '${CONCRETE5_WORKING_DIRECTORY_NAME}' folder as 'languages_old' folder"
     echo "mv ${BASE_PATH_APPLICATION}/languages ${WHERE_IS_CONCRETE5}/${CONCRETE5_WORKING_DIRECTORY_NAME}/languages_old"
-    mv ${BASE_PATH_APPLICATION}/languages ${WHERE_IS_CONCRETE5}/${CONCRETE5_WORKING_DIRECTORY_NAME}/languages_old
-    echo "c5 Upgrade: Renaming 'languages_new' folder to 'languages' folder"
-    echo "mv ${BASE_PATH_APPLICATION}/languages_new mv ${BASE_PATH_APPLICATION}/languages"
-    mv ${BASE_PATH_APPLICATION}/languages_new ${BASE_PATH_APPLICATION}/languages
+    cp -r ${BASE_PATH_APPLICATION}/languages ${WHERE_IS_CONCRETE5}/${CONCRETE5_WORKING_DIRECTORY_NAME}/languages_old
 
     echo "c5 Upgrade: Switching to concrete5 root folder"
     cd ${WHERE_IS_CONCRETE5}
@@ -811,10 +805,6 @@ update_file_permissions() {
 }
 
 install_languages() {
-    echo "c5 Upgrade: Copying old languages to new languages folder"
-    echo "cp -rf ${WHERE_IS_CONCRETE5}/${CONCRETE5_WORKING_DIRECTORY_NAME}/languages_old/* ${BASE_PATH_APPLICATION}/languages/"
-    cp -rf ${WHERE_IS_CONCRETE5}/${CONCRETE5_WORKING_DIRECTORY_NAME}/languages_old/* ${BASE_PATH_APPLICATION}/languages/
-
     echo "c5 Upgrade: Updating all the outdated language files (for the concrete5 core and for all the packages)"
     ${DO_SUDO}${WHERE_IS_CONCRETE5}/concrete/bin/concrete5 c5:language-install --update
 }
