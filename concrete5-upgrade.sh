@@ -141,6 +141,8 @@ show_main_menu()
   echo "3. Upgrade Concrete CMS to version ${C5_Version}"
   echo "4. Do all of the above"
   echo "5. Set Options"
+  echo "6. Enable maintainance mode"
+  echo "7. Dsiable maintainance mode"
   echo " -- -- -- -- -- -- -- -- -- -- --"
   echo "q. Quit"
   echo -en "Enter your selection: "
@@ -185,6 +187,22 @@ do_main_menu()
 	;;
     "o"|"options"|"5")
 	set_options
+	;;
+	;;
+	"6")
+	enable_maintenance_mode
+    echo "---------------------------"
+    echo "---      Complete!      ---"
+    echo "---------------------------"
+    exit 0
+	;;
+	;;
+	"7")
+	disable_maintenance_mode
+    echo "---------------------------"
+    echo "---      Complete!      ---"
+    echo "---------------------------"
+    exit 0
 	;;
 	"q")
 	echo "Sorry this is not the script you are looking for!"
@@ -870,6 +888,11 @@ disable_maintenance_mode() {
     echo "c5 Upgrade: Disabling maintenance mode"
     ${DO_SUDO}${WHERE_IS_CONCRETE5}/concrete/bin/concrete5 c5:config -g set concrete.maintenance_mode false
 }
+enable_maintenance_mode() {
+    echo "c5 Upgrade: Enabling maintenance mode"
+    ${DO_SUDO}${WHERE_IS_CONCRETE5}/concrete/bin/concrete5 c5:config -g set concrete.maintenance_mode true
+}
+
 
 
 do_main_menu
