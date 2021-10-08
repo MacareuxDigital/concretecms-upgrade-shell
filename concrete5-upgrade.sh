@@ -3,7 +3,7 @@
 # Upgrade Script for Concrete CMS
 # Supports Version 8.x only.
 # ----------
-# Version 1.0
+# Version 2.0
 # By Derek Cameron & Katz Ueno
 
 # INSTRUCTION:
@@ -15,24 +15,42 @@
 # VARIABLES
 # ----------
 
-# Production Details to import from or to upgrade
+# Production DB Details to backup
 PROD_DB_HOST="localhost"
 PROD_DB_USERNAME=""
 PROD_DB_PASSWORD=""
 PROD_DB_DATABASE=""
+PROD_DB_PORT="3306"
+# Set "true" if you're using MySQL 5.7.31 or later. (true or false)
+PROD_DB_IF_NO_TABLESPACE="false"
 # Use Import file instead of production database
 USE_IMPORT_FILE="NO"
 IMPORT_FILE=""
 
-# Development details to backup/import to
-DEV_DB_HOST="localhost"
-DEV_DB_USERNAME=""
-DEV_DB_PASSWORD=""
-DEV_DB_DATABASE=""
+# Backup DB details to backup/import to
+BACKUP_DB_HOST="localhost"
+BACKUP_DB_USERNAME=""
+BACKUP_DB_PASSWORD=""
+BACKUP_DB_DATABASE=""
+BACKUP_DB_PORT="3306"
+# Set "true" if you're using MySQL 5.7.31 or later. (true or false)
+BACKUP_DB_IF_NO_TABLESPACE="false"
 
-# Concrete5 Variables
-SITE_NAME="Concrete5"
+# Set DB's default charaset. Make sure to set the proper MySQL character encoding to avoid character corruption
+MYSQL_CHARASET="utf8mb4"
+
 WHERE_IS_CONCRETE5="/var/www/vhosts/concrete5"
+
+# Backup Variables
+## name of backup files
+PROJECT_NAME="Concrete5"
+WHERE_TO_SAVE="/var/www/vhosts/backups"
+UPGRADE_WORKING_DIR="${C5_Version}-upgrade"
+
+# Permissions
+USER_PERMISSIONS="apache:apache"
+# enter sudo command OR comment it out to execute as SSH user without sudo
+DO_SUDO="sudo -u apache " # Make sure to have a space at the end.
 
 if [ -z "$1" ]; then
     C5_Version=$1
@@ -47,13 +65,6 @@ else
 fi
 
 # CONCRETE5_PACKAGE_DOWNLOAD="https://marketplace.concretecms.com/latest.zip"
-
-# Backup Variables
-WHERE_TO_SAVE="/var/www/vhosts/backups"
-FILE_NAME="${C5_Version}-upgrade"
-# Permissions
-USER_PERMISSIONS="apache:apache"
-DO_SUDO="sudo -u apache " # Make sure to have a space at the end.
 
 # Concrete 5 Download Links
 #    '8.5.6'=>'https://www.concretecms.com/download_file/61dab82f-fb01-47bc-8cf1-deffff890224/9'
@@ -80,7 +91,6 @@ DO_SUDO="sudo -u apache " # Make sure to have a space at the end.
 #    '8.0.2'=>'https://marketplace.concretecms.com/download_file/-/view/92910/',
 #    '8.0.1'=>'https://marketplace.concretecms.com/download_file/-/view/92834/',
 #    '8.0.0'=>'https://marketplace.concretecms.com/download_file/-/view/92663/',
-#    '5.7.5.13'=>'https://marketplace.concretecms.com/download_file/-/view/93075/',
 
 # ==============================
 #
@@ -88,10 +98,29 @@ DO_SUDO="sudo -u apache " # Make sure to have a space at the end.
 #
 # ==============================
 
+# ---- tablespace option after MySQL 5.7.31
+if [ "$PROD_DB_IF_NO_TABLESPACE" = "TRUE" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "True" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "true" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "t" ]; then
+    PROD_MYSQLDUMP_OPTION_TABLESPACE="--no-tablespaces"
+elif [ "$PROD_DB_IF_NO_TABLESPACE" = "FALSE" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "False" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "false" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "f" ]; then
+    PROD_MYSQLDUMP_OPTION_TABLESPACE=""
+else
+    echo "c5 Backup ERROR: PROD_DB_IF_NO_TABLESPACE variable is not properly set in the shell script"
+    exit
+fi
+# ---- tablespace option after MySQL 5.7.31
+if [ "$BACKUP_DB_IF_NO_TABLESPACE" = "TRUE" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "True" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "true" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "t" ]; then
+    BACKUP_MYSQLDUMP_OPTION_TABLESPACE="--no-tablespaces"
+elif [ "$BACKUP_DB_IF_NO_TABLESPACE" = "FALSE" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "False" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "false" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "f" ]; then
+    BACKUP_MYSQLDUMP_OPTION_TABLESPACE=""
+else
+    echo "c5 Backup ERROR: BACKUP_DB_IF_NO_TABLESPACE variable is not properly set in the shell script"
+    exit
+fi
+
 DELETE_WORKFILE="No"
 DO_EVERYTHING="No"
 NOW_TIME=$(date "+%Y%m%d%H%M%S")
-TAR_FILE="${SITE_NAME}_${FILE_NAME}"_"${NOW_TIME}.tar.gz"
+TAR_FILE="${PROJECT_NAME}"_"${NOW_TIME}.tar.gz"
 
 if [ "$C5_Version" = "5.7.5.13" ]; then
     CONCRETE5_PACKAGE_DIRECTORY_NAME="concrete5.7.5.13"
@@ -107,9 +136,9 @@ show_main_menu()
 {
   
   echo "-- Concrete5 Upgrade Script --"
-  echo "1. Backup data from concrete5"
-  echo "2. Import data from production"
-  echo "3. Upgrade Concrete5 to version ${C5_Version}"
+  echo "1. Backup data from Concrete CMS"
+  echo "2. Import DB data from production DB to backup DB"
+  echo "3. Upgrade Concrete CMS to version ${C5_Version}"
   echo "4. Do all of the above"
   echo "5. Set Options"
   echo " -- -- -- -- -- -- -- -- -- -- --"
@@ -177,10 +206,12 @@ reset_concrete5_settings() {
 }
 
 reset_dev_settings() {
-    DEV_DB_HOST=""
-    DEV_DB_USERNAME=""
-    DEV_DB_PASSWORD=""
-    DEV_DB_DATABASE=""
+    BACKUP_DB_HOST=""
+    BACKUP_DB_USERNAME=""
+    BACKUP_DB_PASSWORD=""
+    BACKUP_DB_DATABASE=""
+    BACKUP_DB_PORT=""
+    MYSQL_CHARASET=""
 }
 
 reset_prod_settings() {
@@ -188,6 +219,8 @@ reset_prod_settings() {
     PROD_DB_USERNAME=""
     PROD_DB_PASSWORD=""
     PROD_DB_DATABASE=""
+    PROD_DB_PORT=""
+    MYSQL_CHARASET=""
 }
 
 show_backup() {
@@ -197,6 +230,7 @@ selection="nothing"
     echo "1. Backup database only"
     echo "2. Backup files only"
     echo "3. Backup files and database"
+    echo "4. Backup config and database"
     echo "q. Return to main menu"
     send_back() {
         do_main_menu
@@ -210,6 +244,7 @@ selection="nothing"
             "1") backup_type="1"; do_backup;;
             "2") backup_type="2"; do_backup;;
             "3") backup_type="3"; do_backup;;
+            "4") backup_type="4"; do_backup;;
             "q") echo "Returning you to main menu"; send_back;;
             *) selection="nothing"; echo "Unrecognised input."; echo "";;
         esac
@@ -346,6 +381,10 @@ set_backup_directory
         read PROD_DB_USERNAME
         echo -en "Please enter the database user's password : "
         read PROD_DB_PASSWORD
+        echo -en "Please enter the database port : "
+        read PROD_DB_PORT
+        echo -en "Please enter the database character collation : "
+        read MYSQL_CHARASET
         echo 
         echo 'You entered the following:' 
     }
@@ -382,11 +421,11 @@ do_import() {
 
 do_prod_db_backup() {
     set_prod_db_details
-    SQL_FILE="${SITE_NAME}_${FILE_NAME}_prod_${NOW_TIME}.sql"
+    SQL_FILE="${PROJECT_NAME}_prod_db_${NOW_TIME}.sql"
     echo "c5 Backup: Backing up production database to ${WHERE_TO_SAVE}/${SQL_FILE}"
     if [ -n "$PROD_DB_PASSWORD" ]; then
         set +e
-        mysqldump -h ${PROD_DB_HOST} -u ${PROD_DB_USERNAME} --password=${PROD_DB_PASSWORD} --single-transaction "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+        mysqldump -h ${PROD_DB_HOST} --port=${PROD_DB_PORT} -u ${PROD_DB_USERNAME} --password=${PROD_DB_PASSWORD} --single-transaction ${PROD_MYSQLDUMP_OPTION_TABLESPACE} --default-character-set=${MYSQL_CHARASET} "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
         ret=$?
         if [ "$ret" = 0 ]; then
             echo ""
@@ -394,13 +433,15 @@ do_prod_db_backup() {
         else
             echo "c5 Backup: ERROR: MySQL password failed. You must type MySQL password manually. OR hit ENTER if you want to stop this script now."
             set -e
-            mysqldump -h ${PROD_DB_HOST} -u ${PROD_DB_USERNAME} -p --single-transaction "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+            mysqldump -h ${PROD_DB_HOST} --port=${PROD_MYSQL_PORT} -u ${PROD_DB_USERNAME} -p --single-transaction --default-character-set=${MYSQL_CHARASET} ${PROD_MYSQLDUMP_OPTION_TABLESPACE} "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
         fi
             set -e
     else
         echo "c5 Backup: Enter the MySQL password..."
-        mysqldump -h ${PROD_DB_HOST} -u ${PROD_DB_USERNAME} -p --single-transaction "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+        mysqldump -h ${PROD_DB_HOST} --port=${PROD_MYSQL_PORT} -u ${PROD_DB_USERNAME} -p --single-transaction --default-character-set=${MYSQL_CHARASET} ${PROD_MYSQLDUMP_OPTION_TABLESPACE} "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
     fi
+    echo "c5 Backup: Backup SQL and config file into a tar"
+    tar -czvf ${WHERE_TO_SAVE}/${BACKUP_FILE}
 }
 
 do_db_import() {
@@ -416,7 +457,7 @@ do_db_import() {
     }
     echo "Would you like to import from a file?"
     manual_input
-    SQL_FILE="${SITE_NAME}_${FILE_NAME}_prod_${NOW_TIME}.sql"
+    SQL_FILE="${PROJECT_NAME}_prod_${NOW_TIME}.sql"
     if [ "${USE_IMPORT_FILE}" != "Yes" ]; then
         do_prod_db_backup
     else 
@@ -424,12 +465,12 @@ do_db_import() {
     fi
     set_develop_db_details
     echo "c5 Import: Begining import process..."
-    if [ -n "$DEV_DB_PASSWORD" ]; then
+    if [ -n "$BACKUP_DB_PASSWORD" ]; then
         set +e
         if [ "$USE_IMPORT_FILE" = "Yes" ]; then
-            mysql -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} --password=${DEV_DB_PASSWORD} "${DEV_DB_DATABASE}" < "${IMPORT_FILE}"
+            mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${IMPORT_FILE}"
         else
-            mysql -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} --password=${DEV_DB_PASSWORD} "${DEV_DB_DATABASE}" < "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+            mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${WHERE_TO_SAVE}"/"${SQL_FILE}"
         fi
         ret=$?
         if [ "$ret" = 0 ]; then
@@ -437,41 +478,44 @@ do_db_import() {
             echo "c5 Import: Production data imported"
             echo ""
             echo "c5 Import: Replacing email addresses with dummy address"
+            mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE Users SET uEmail='dummy@localhost' WHERE uEmail NOT LIKE '%concrete5.co.jp';"
             echo "c5 Import: Setting storage to 'Default'"
-            mysql -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} --password=${DEV_DB_PASSWORD} --database=${DEV_DB_DATABASE} -e "UPDATE Users SET uEmail='dummy@localhost' WHERE uEmail NOT LIKE '%concrete5.co.jp';UPDATE FileStorageLocations SET fslIsDefault='0';UPDATE FileStorageLocations SET fslIsDefault='1' WHERE fslID='1';"
+            mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE FileStorageLocations SET fslIsDefault='0';UPDATE FileStorageLocations SET fslIsDefault='1' WHERE fslID='1';"
 
         else
             echo "c5 Import: ERROR: MySQL password failed. You must type MySQL password manually. OR hit ENTER if you want to stop this script now."
             set -e
             if [ "$USE_IMPORT_FILE" = "Yes" ]; then
-                mysql -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} -p  "${DEV_DB_DATABASE}" < "${IMPORT_FILE}"
+                mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${IMPORT_FILE}"
             else
-                mysql -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} -p  "${DEV_DB_DATABASE}" < "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+                mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${WHERE_TO_SAVE}"/"${SQL_FILE}"
             fi
             echo ""
             echo "c5 Import: Production data imported"
             echo ""
             echo "c5 Import: Replacing email addresses with dummy address"
+            mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE Users SET uEmail='dummy@localhost' WHERE uEmail NOT LIKE '%concrete5.co.jp';"
             echo "c5 Import: Setting storage to 'Default'"
-            mysql -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} -p --database=${DEV_DB_DATABASE} -e "UPDATE Users SET uEmail='dummy@localhost' WHERE uEmail NOT LIKE '%concrete5.co.jp';UPDATE FileStorageLocations SET fslIsDefault='0';UPDATE FileStorageLocations SET fslIsDefault='1' WHERE fslID='1';"
+            mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE FileStorageLocations SET fslIsDefault='0';UPDATE FileStorageLocations SET fslIsDefault='1' WHERE fslID='1';"
         fi
         set -e
     else
         echo "c5 Backup: Enter the MySQL password..."
         if [ "$USE_IMPORT_FILE" = "Yes" ]; then
-            mysql -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} -p  "${DEV_DB_DATABASE}" < "${IMPORT_FILE}"
+            mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${IMPORT_FILE}"
         else
-            mysql -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} -p  "${DEV_DB_DATABASE}" < "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+            mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${WHERE_TO_SAVE}"/"${SQL_FILE}"
         fi
         echo ""
         echo "c5 Import: Production data imported"
         echo ""
         echo "c5 Import: Replacing email addresses with dummy address"
+        mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE Users SET uEmail='dummy@localhost' WHERE uEmail NOT LIKE '%concrete5.co.jp'"
         echo "c5 Import: Setting storage to 'Default'"
-        mysql -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} -p --database=${DEV_DB_DATABASE} -e "UPDATE Users SET uEmail='dummy@localhost' WHERE uEmail NOT LIKE '%concrete5.co.jp'" -e"UPDATE FileStorageLocations SET fslIsDefault='0';UPDATE FileStorageLocations SET fslIsDefault='1' WHERE fslID='1';"
-        
+        mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE FileStorageLocations SET fslIsDefault='0';UPDATE FileStorageLocations SET fslIsDefault='1' WHERE fslID='1';"
+
     fi
-    echo "c5 Backup: Zipping SQL"
+    echo "c5 Backup: Tar SQL"
     if [ "$USE_IMPORT_FILE" = "Yes" ]; then
         tar -cvzpf "${WHERE_TO_SAVE}"/"${TAR_FILE}" "${IMPORT_FILE}"
         echo "c5 Backup: Now removing SQL dump file..."
@@ -542,32 +586,32 @@ set_concrete_directory() {
 }
 
 set_develop_db_details() {
-    if [ -z "$DEV_DB_HOST" ] || [ "$DEV_DB_HOST" = " " ]; then
+    if [ -z "$BACKUP_DB_HOST" ] || [ "$BACKUP_DB_HOST" = " " ]; then
         echo -en "Please enter the address of the development MYSQL server (leave blank for localhost) : "
-        read DEV_DB_HOST
-        case "$DEV_DB_HOST" in
-            "") DEV_DB_HOST="localhost";;
+        read BACKUP_DB_HOST
+        case "$BACKUP_DB_HOST" in
+            "") BACKUP_DB_HOST="localhost";;
         esac
     fi
-    if [ -z "$DEV_DB_USERNAME" ] || [ "$DEV_DB_USERNAME" = " " ]; then
-        while [ -z "$DEV_DB_USERNAME" ]; do 
+    if [ -z "$BACKUP_DB_USERNAME" ] || [ "$BACKUP_DB_USERNAME" = " " ]; then
+        while [ -z "$BACKUP_DB_USERNAME" ]; do 
             echo -en "Please enter the MYSQL user for the development server's database : "
-            read DEV_DB_USERNAME
-            case "$DEV_DB_USERNAME" in
-                ""|" ") DEV_DB_USERNAME=""; echo "You must enter a username";;
+            read BACKUP_DB_USERNAME
+            case "$BACKUP_DB_USERNAME" in
+                ""|" ") BACKUP_DB_USERNAME=""; echo "You must enter a username";;
             esac
         done;
     fi
-    if [ -z "$DEV_DB_DATABASE" ] || [ "$DEV_DB_DATABASE" = " " ]; then
-        while [ -z "$DEV_DB_DATABASE" ]; do 
+    if [ -z "$BACKUP_DB_DATABASE" ] || [ "$BACKUP_DB_DATABASE" = " " ]; then
+        while [ -z "$BACKUP_DB_DATABASE" ]; do 
             echo -en "Please enter the database name which you would like to use : "
-            read DEV_DB_DATABASE
-            case "$DEV_DB_DATABASE" in
-                ""|" ") DEV_DB_DATABASE=""; echo "You must enter a database name";;
+            read BACKUP_DB_DATABASE
+            case "$BACKUP_DB_DATABASE" in
+                ""|" ") BACKUP_DB_DATABASE=""; echo "You must enter a database name";;
             esac
         done  
     fi
-    echo "We will log in with ${DEV_DB_USERNAME} on ${DEV_DB_HOST} and use the database called ${DEV_DB_DATABASE}"
+    echo "We will log in with ${BACKUP_DB_USERNAME} on ${BACKUP_DB_HOST} and use the database called ${BACKUP_DB_DATABASE}"
 }
 
 set_prod_db_details() {
@@ -619,7 +663,10 @@ do_backup () {
         cd ${WHERE_IS_CONCRETE5}
         if [ "$backup_type" = "2" ]; then
             do_file_backup
-        else
+        else if [ "$backup_type" = "4" ]; then
+            do_db_backup
+            do_config_backup
+        else # $backup_type = "3"
             do_db_backup
             do_file_backup
         fi
@@ -649,8 +696,9 @@ do_db_backup() {
         do_dev_db_backup
     fi
 
-    echo "c5 Backup: Zipping SQL"
-    tar -cvzpf "${WHERE_TO_SAVE}"/"${TAR_FILE}" "${WHERE_TO_SAVE}/${SQL_FILE}"
+    SQL_TAR_FILE="${PROJECT_NAME}"_"${NOW_TIME}_sql.tar.gz"
+    echo "c5 Backup: Making tar from SQL"
+    tar -cvzpf "${WHERE_TO_SAVE}"/"${SQL_TAR_FILE}" "${WHERE_TO_SAVE}/${SQL_FILE}"
     echo "c5 Backup: Now removing SQL dump file..."
     rm -f "${WHERE_TO_SAVE}/${SQL_FILE}"
 }
@@ -658,10 +706,10 @@ do_db_backup() {
 do_dev_db_backup() {
     set_develop_db_details
     echo "c5 Backup: Executing MySQL Dump..."
-    SQL_FILE="${SITE_NAME}_${FILE_NAME}_dev_${NOW_TIME}.sql"
-    if [ -n "$DEV_DB_PASSWORD" ]; then
+    SQL_FILE="${PROJECT_NAME}_dev_${NOW_TIME}.sql"
+    if [ -n "$BACKUP_DB_PASSWORD" ]; then
         set +e
-        mysqldump -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} --password=${DEV_DB_PASSWORD} --single-transaction "${DEV_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+        mysqldump -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --single-transaction --default-character-set=${MYSQL_CHARASET} ${BACKUP_MYSQLDUMP_OPTION_TABLESPACE} "${BACKUP_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
         ret=$?
         if [ "$ret" = 0 ]; then
             echo ""
@@ -669,19 +717,25 @@ do_dev_db_backup() {
         else
             echo "c5 Backup: ERROR: MySQL password failed. You must type MySQL password manually. OR hit ENTER if you want to stop this script now."
             set -e
-            mysqldump -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} -p --single-transaction "${DEV_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+            mysqldump -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --single-transaction --default-character-set=${MYSQL_CHARASET} ${BACKUP_MYSQLDUMP_OPTION_TABLESPACE} "${BACKUP_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
         fi
         set -e
     else
         echo "c5 Backup: Enter the MySQL password..."
-        mysqldump -h ${DEV_DB_HOST} -u ${DEV_DB_USERNAME} -p --single-transaction "${DEV_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+        mysqldump -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --single-transaction --default-character-set=${MYSQL_CHARASET} ${BACKUP_MYSQLDUMP_OPTION_TABLESPACE} "${BACKUP_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
     fi
 }
 
 do_file_backup() {
     # Extend this to do more types of file backup
-    echo "c5 Backup: Zipping All files"
+    echo "c5 Backup: Making a tar of All files"
     tar -cvzpf "${WHERE_TO_SAVE}"/"${TAR_FILE}" "${WHERE_IS_CONCRETE5}"
+}
+
+do_config_backup() {
+    CONFIG_TAR_FILE="${PROJECT_NAME}"_"${NOW_TIME}_config.tar.gz"
+    echo "c5 Backup: Making a tar of config files"
+    tar -cvzpf "${WHERE_TO_SAVE}"/"${CONFIG_TAR_FILE}" "${WHERE_IS_CONCRETE5}/application/config"
 }
 
 do_upgrade() {
@@ -784,10 +838,14 @@ do_upgrade() {
         echo "c5 Upgrade: Make sure to delete them after you've checked if everything works."
     fi
 
-    update_file_permissions
+    if [ -z "$DO_SUDO" ]; then
+      update_file_permissions
+    fi
     install_languages
     # disable_maintenance_mode
-    update_file_permissions
+    if [ -z "$DO_SUDO" ]; then
+      update_file_permissions
+    fi
 
     echo "c5 Upgrade: ..."
     echo "c5 Upgrade: ..."
