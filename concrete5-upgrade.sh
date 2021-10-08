@@ -873,10 +873,10 @@ do_upgrade() {
 
 update_file_permissions() {
     echo "c5 Upgrade: Updating file folder permissions"
-    chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/config
-    chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/files
-    chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/languages
-    chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/concrete
+    sudo chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/config
+    sudo chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/files
+    sudo chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/languages
+    sudo chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/concrete
     # chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/packages
 }
 
