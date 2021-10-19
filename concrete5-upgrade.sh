@@ -15,6 +15,24 @@
 # VARIABLES
 # ----------
 
+
+# Server Config
+## Concrete CMS Location
+WHERE_IS_CONCRETE5="/var/www/vhosts/concrete5"
+## Permissions
+USER_PERMISSIONS="apache:apache"
+# enter sudo command OR comment it out to execute as SSH user without sudo
+DO_SUDO="sudo -u apache " # Make sure to have a space at the end.
+
+# Backup Variables
+## name of backup files
+PROJECT_NAME="Concrete"
+WHERE_TO_SAVE="/var/www/vhosts/backups"
+UPGRADE_WORKING_DIR="${C5_Version}-upgrade"
+
+# Set DB's default charaset. Make sure to set the proper MySQL character encoding to avoid character corruption
+MYSQL_CHARASET="utf8mb4"
+
 # Production DB Details to backup
 PROD_DB_HOST="localhost"
 PROD_DB_USERNAME="c5"
@@ -23,11 +41,13 @@ PROD_DB_DATABASE="c5"
 PROD_DB_PORT="3306"
 # Set "true" if you're using MySQL 5.7.31 or later. (true or false)
 PROD_DB_IF_NO_TABLESPACE="false"
-# Use Import file instead of production database
+
+# Database Copy Feature
+## Use Import file instead of production database
 USE_IMPORT_FILE="NO"
 IMPORT_FILE=""
 
-# Backup DB details to backup/import to
+## Backup DB details to backup/import to
 BACKUP_DB_HOST="localhost"
 BACKUP_DB_USERNAME=""
 BACKUP_DB_PASSWORD=""
@@ -35,22 +55,6 @@ BACKUP_DB_DATABASE=""
 BACKUP_DB_PORT="3306"
 # Set "true" if you're using MySQL 5.7.31 or later. (true or false)
 BACKUP_DB_IF_NO_TABLESPACE="false"
-
-# Set DB's default charaset. Make sure to set the proper MySQL character encoding to avoid character corruption
-MYSQL_CHARASET="utf8mb4"
-
-WHERE_IS_CONCRETE5="/var/www/vhosts/concrete5"
-
-# Backup Variables
-## name of backup files
-PROJECT_NAME="Concrete5"
-WHERE_TO_SAVE="/var/www/vhosts/backups"
-UPGRADE_WORKING_DIR="${C5_Version}-upgrade"
-
-# Permissions
-USER_PERMISSIONS="apache:apache"
-# enter sudo command OR comment it out to execute as SSH user without sudo
-DO_SUDO="sudo -u apache " # Make sure to have a space at the end.
 
 ## Option DEBUG
 #echo "----------"
