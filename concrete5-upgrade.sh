@@ -17,9 +17,9 @@
 
 # Production DB Details to backup
 PROD_DB_HOST="localhost"
-PROD_DB_USERNAME=""
-PROD_DB_PASSWORD=""
-PROD_DB_DATABASE=""
+PROD_DB_USERNAME="c5"
+PROD_DB_PASSWORD="12345"
+PROD_DB_DATABASE="c5"
 PROD_DB_PORT="3306"
 # Set "true" if you're using MySQL 5.7.31 or later. (true or false)
 PROD_DB_IF_NO_TABLESPACE="false"
@@ -52,17 +52,28 @@ USER_PERMISSIONS="apache:apache"
 # enter sudo command OR comment it out to execute as SSH user without sudo
 DO_SUDO="sudo -u apache " # Make sure to have a space at the end.
 
-if [ -z "$1" ]; then
-    C5_Version=$1
-else
+## Option DEBUG
+#echo "----------"
+#echo "DEBUG: option 1 $1"
+#echo "DEBUG: option 2 $2"
+#echo "----------"
+
+C5_Version=$1
+CONCRETE5_PACKAGE_DOWNLOAD=$2
+
+if [ ! $C5_Version ]; then
     C5_Version="8.5.6"
 fi
 
-if [ -z "$2" ]; then
-    CONCRETE5_PACKAGE_DOWNLOAD=$2
-else
+if [ ! $CONCRETE5_PACKAGE_DOWNLOAD ]; then
     CONCRETE5_PACKAGE_DOWNLOAD="https://www.concretecms.com/download_file/61dab82f-fb01-47bc-8cf1-deffff890224/9"
 fi
+
+## Option DEBUG
+#echo "----------"
+#echo "DEBUG: C5_Version $C5_Version"
+#echo "DEBUG: CONCRETE5_PACKAGE_DOWNLOAD: $CONCRETE5_PACKAGE_DOWNLOAD"
+#echo "----------"
 
 # CONCRETE5_PACKAGE_DOWNLOAD="https://marketplace.concretecms.com/latest.zip"
 
@@ -776,7 +787,6 @@ do_upgrade() {
     echo "c5 Upgrade: Getting a new concrete5 core file"
     echo "c5 Upgrade: curl -L -o ${BASE_PATH_NEW_VERSION}/concrete5.zip ${CONCRETE5_PACKAGE_DOWNLOAD}"
     curl -L -o ${BASE_PATH_NEW_VERSION}/concrete5.zip ${CONCRETE5_PACKAGE_DOWNLOAD}
-    exit;
     echo "c5 Upgrade: Unzipping new concrete5.zip"
     unzip -q ${BASE_PATH_NEW_VERSION}/concrete5.zip
     echo "c5 Upgrade: Moving all concrete5 core file to parent directory"
