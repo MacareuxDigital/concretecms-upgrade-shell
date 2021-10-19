@@ -80,6 +80,14 @@ Enter the option that you would like to execute.
 
 Wait until the commands finish processing.
 
+# Version History
+
+Version | Updates
+----|----------
+2.0 | - Enable/Disable Maintenance Mode<br>- New config & database backup option<br>- Change from wget to curl<br>- Bug fix: Was unable to run the script with no option<br>- Readme
+1.0 | Drop Concrete CMS support for 5.7 and earlier version
+0.3 | Ability to specify different Concrete CMS version and download zip by command
+
 
 # MIT LICENSE and NO GUARANTEE
 
