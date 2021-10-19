@@ -188,14 +188,12 @@ do_main_menu()
     "o"|"options"|"5")
 	set_options
 	;;
-	;;
 	"6")
 	enable_maintenance_mode
     echo "---------------------------"
     echo "---      Complete!      ---"
     echo "---------------------------"
     exit 0
-	;;
 	;;
 	"7")
 	disable_maintenance_mode
@@ -681,7 +679,7 @@ do_backup () {
         cd ${WHERE_IS_CONCRETE5}
         if [ "$backup_type" = "2" ]; then
             do_file_backup
-        else if [ "$backup_type" = "4" ]; then
+        elif [ "$backup_type" = "4" ]; then
             do_db_backup
             do_config_backup
         else # $backup_type = "3"
