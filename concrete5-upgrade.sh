@@ -774,7 +774,9 @@ do_upgrade() {
     echo "c5 Upgrade:..."
 
     echo "c5 Upgrade: Getting a new concrete5 core file"
-    wget -O ${BASE_PATH_NEW_VERSION}/concrete5.zip ${CONCRETE5_PACKAGE_DOWNLOAD}
+    echo "c5 Upgrade: curl -L -o ${BASE_PATH_NEW_VERSION}/concrete5.zip ${CONCRETE5_PACKAGE_DOWNLOAD}"
+    curl -L -o ${BASE_PATH_NEW_VERSION}/concrete5.zip ${CONCRETE5_PACKAGE_DOWNLOAD}
+    exit;
     echo "c5 Upgrade: Unzipping new concrete5.zip"
     unzip -q ${BASE_PATH_NEW_VERSION}/concrete5.zip
     echo "c5 Upgrade: Moving all concrete5 core file to parent directory"
