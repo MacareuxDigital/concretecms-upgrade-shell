@@ -19,16 +19,15 @@
 # Server Config
 ## Concrete CMS Location
 WHERE_IS_CONCRETE5="/var/www/vhosts/concrete5"
-## Permissions
-USER_PERMISSIONS="apache:apache"
 # enter sudo command OR comment it out to execute as SSH user without sudo
 DO_SUDO="sudo -u apache " # Make sure to have a space at the end.
+## Permissions
+USER_PERMISSIONS="apache:apache"
 
 # Backup Variables
 ## name of backup files
 PROJECT_NAME="Concrete"
 WHERE_TO_SAVE="/var/www/vhosts/backups"
-UPGRADE_WORKING_DIR="${C5_Version}-upgrade"
 
 # Set DB's default charaset. Make sure to set the proper MySQL character encoding to avoid character corruption
 MYSQL_CHARASET="utf8mb4"
@@ -72,6 +71,8 @@ fi
 if [ ! $CONCRETE5_PACKAGE_DOWNLOAD ]; then
     CONCRETE5_PACKAGE_DOWNLOAD="https://www.concretecms.com/download_file/61dab82f-fb01-47bc-8cf1-deffff890224/9"
 fi
+
+UPGRADE_WORKING_DIR="${C5_Version}-upgrade"
 
 ## Option DEBUG
 #echo "----------"
