@@ -65,11 +65,11 @@ C5_Version=$1
 CONCRETE5_PACKAGE_DOWNLOAD=$2
 
 if [ ! $C5_Version ]; then
-    C5_Version="8.5.6"
+    C5_Version="8.5.7"
 fi
 
 if [ ! $CONCRETE5_PACKAGE_DOWNLOAD ]; then
-    CONCRETE5_PACKAGE_DOWNLOAD="https://www.concretecms.com/download_file/61dab82f-fb01-47bc-8cf1-deffff890224/9"
+    CONCRETE5_PACKAGE_DOWNLOAD="https://www.concretecms.org/download_file/ae9cca19-d76c-458e-a63a-ce9b7b963e1d"
 fi
 
 UPGRADE_WORKING_DIR="${C5_Version}-upgrade"
