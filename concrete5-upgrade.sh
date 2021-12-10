@@ -8,7 +8,7 @@
 
 # INSTRUCTION:
 # ----------
-# https://github.com/katzueno/concrete5-upgrade-shell
+# https://github.com/concrete5-community/concrete5-upgrade-shell
 
 # USE IT AT YOUR OWN RISK!
 

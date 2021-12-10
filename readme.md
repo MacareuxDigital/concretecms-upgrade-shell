@@ -1,7 +1,7 @@
-# concrete5 Core Upgrade Shell:
+# Concrete CMS Core Upgrade Shell:
 
-This is simple shell script to upgrade your concrete5 site overriding the core "concrete" directory.
-This is suitable for someone who don't want to pile up concrete5 versions in "update" directory.
+This is simple shell script to upgrade your Concrete CMS (formerly concrete5) site overriding the core "concrete" directory.
+This is suitable for someone who don't want to pile up Concrete CMS versions in "update" directory.
 
 Since you're using GitHub, I assume you know what you're doing. This is the script that runs on your server.
 
