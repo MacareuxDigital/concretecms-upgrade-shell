@@ -717,7 +717,7 @@ do_db_backup() {
         read backupwhat 
             case "$backupwhat" in
                 "production"|"prod"|"p") do_prod_db_backup;;
-                "development"|"dev"|"d") do_dev_db_backup;;
+                "development"|"dev"|"d"|"d"|"backup"|"b") do_dev_db_backup;;
                 ""|" ") echo "backing up development database"; do_dev_db_backup;;
                 "q"|"quit") echo "This script was not meant for this world... Goodbye..."; exit 0;;
                 *) backupwhat="nothing";;
