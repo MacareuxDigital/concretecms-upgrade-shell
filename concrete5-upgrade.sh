@@ -3,7 +3,7 @@
 # Upgrade Script for Concrete CMS
 # Supports Version 8.x only.
 # ----------
-# Version 2.0
+# Version 2.0.1
 # By Derek Cameron & Katz Ueno
 
 # INSTRUCTION:

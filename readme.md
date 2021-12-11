@@ -84,6 +84,7 @@ Wait until the commands finish processing.
 
 Version | Updates
 ----|----------
+2.0.1 | - Readme: change concrete5 to Concrete CMS<br>- Bug fix which prod db backup ends with error with empty tar command
 2.0 | - Enable/Disable Maintenance Mode<br>- New config & database backup option<br>- Change from wget to curl<br>- Bug fix: Was unable to run the script with no option<br>- Readme
 1.0 | Drop Concrete CMS support for 5.7 and earlier version
 0.3 | Ability to specify different Concrete CMS version and download zip by command
