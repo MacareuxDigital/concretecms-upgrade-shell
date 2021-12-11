@@ -54,10 +54,13 @@ If production database backup failed, you can quickly point to this backup datab
 - `USE_IMPORT_FILE` & `IMPORT_FILE` : True/False, then enter the full server path of SQL dump. We have this option to import additional SQL from server. You may want to import and debug from backup.
 - `BACKUP_DB_*`: Enter your backup Concrete CMS database info such as host address, db username, db password, database name, and port.
     - Read commend carefully regarding tablespace for MySQL engine.
+- `BACKUP_DB_EMPTY_DB`: Set it to `true` if you want to empty backup database before importing. It is recommended to do so especially if you are restoring from upgrade failure because schema may have changed.
+- `BACKUP_DB_ANONYMIZE_USERS`: Set it to `true`, if you are backing up the database to develop environment, you want to anonymize the user email. You may ended up sending test emails to actual user by accident. If your data got stolen, you are entitled for information breach. If you've set true, it will anonymize all users' email address to dummy@example.com.
+- `BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION`: Set it to `true`, if you want to set default file storage location back to Concrete CMS's very default `application/files`. If your production site is using some external file storage, you don't want develop site to upload the file to production environment by mistake.
 
 #### C5_Version & CONCRETE5_PACKAGE_DOWNLOAD
 
-This script let you run without any option, if you do so, it will fetch the set Concrete CMS version.
+This script let you run without any option, if you do so, it will fetch the Concrete CMS version which are set in this variable.
 If you want to change it to older version, change it accordingly.
 
 ## How to run
@@ -84,6 +87,7 @@ Wait until the commands finish processing.
 
 Version | Updates
 ----|----------
+3.0.0 | - Version 9 support & validation check not to run upgrade for 5.7 and earlier versions<br>- Add a `BACKUP_DB_EMPTY_DB` option to empty backup database before importing<br>- Add a BACKUP_DB_ANONYMIZE_USERS option when backing up to backup database<br>- Add a file storage location option  when backing up to backup database
 2.0.1 | - Readme: change concrete5 to Concrete CMS<br>- Bug fix which prod db backup ends with error with empty tar command
 2.0 | - Enable/Disable Maintenance Mode<br>- New config & database backup option<br>- Change from wget to curl<br>- Bug fix: Was unable to run the script with no option<br>- Readme
 1.0 | Drop Concrete CMS support for 5.7 and earlier version

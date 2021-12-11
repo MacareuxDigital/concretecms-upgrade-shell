@@ -3,7 +3,7 @@
 # Upgrade Script for Concrete CMS
 # Supports Version 8.x only.
 # ----------
-# Version 2.0.1
+# Version 3.0.0
 # By Derek Cameron & Katz Ueno
 
 # INSTRUCTION:
@@ -42,8 +42,8 @@ PROD_DB_PORT="3306"
 PROD_DB_IF_NO_TABLESPACE="false"
 
 # Database Copy Feature
-## Use Import file instead of production database
-USE_IMPORT_FILE="NO"
+## Use Import file instead of production database (Yes / No)
+USE_IMPORT_FILE="No"
 ## Specify the SQL file absolute path if you want to import certain file
 IMPORT_FILE=""
 
@@ -55,14 +55,14 @@ BACKUP_DB_DATABASE=""
 BACKUP_DB_PORT="3306"
 # Set "true" if you're using MySQL 5.7.31 or later. (true or false)
 BACKUP_DB_IF_NO_TABLESPACE="false"
-# Set "true" if you want to empty all database data before importing. It is recommended to do so especially if you are restoring from upgrade failure because schema may have changed.
-BACKUP_DB_EMPTY_DB="true"
-# Set "true" if you want to anonymize user's email to "dummy@example.com"
-BACKUP_DB_ANONYMIZE_USERS="false"
-# Even you set true to anonymize emails, you can skip anonymizing email which contains the following letters.
+# Set "yes" if you want to empty all database data before importing. It is recommended to do so especially if you are restoring from upgrade failure because schema may have changed.
+BACKUP_DB_EMPTY_DB="yes"
+# Set "yes" if you want to anonymize user's email to "dummy@example.com"
+BACKUP_DB_ANONYMIZE_USERS="no"
+# Even you set yes to anonymize emails, you can skip anonymizing email which contains the following letters.
 BACKUP_DB_ANONYMIZE_USERS_EXCEPT="concrete5.co.jp"
 # If you use multiple file storage, You can set default file storage to "0" when copying, then you can avoid accidental file upload to production area.
-BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION="false"
+BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION="no"
 ## Option DEBUG
 #echo "----------"
 #echo "DEBUG: option 1 $1"
@@ -80,8 +80,6 @@ if [ ! $CONCRETE5_PACKAGE_DOWNLOAD ]; then
     CONCRETE5_PACKAGE_DOWNLOAD="https://www.concretecms.org/download_file/ae9cca19-d76c-458e-a63a-ce9b7b963e1d"
 fi
 
-UPGRADE_WORKING_DIR="${C5_Version}-upgrade"
-
 ## Option DEBUG
 #echo "----------"
 #echo "DEBUG: C5_Version $C5_Version"
@@ -91,6 +89,9 @@ UPGRADE_WORKING_DIR="${C5_Version}-upgrade"
 # CONCRETE5_PACKAGE_DOWNLOAD="https://marketplace.concretecms.com/latest.zip"
 
 # Concrete 5 Download Links
+#    '9.0.1'=>'https://www.concretecms.org/download_file/dc6d0589-6639-40ac-8c21-8f9f025b7e34'
+#    '9.0.0'=>'https://www.concretecms.com/download_file/29fd2f63-3f52-47d8-80a7-08be47d4ed07'
+#    '8.5.7'=>'https://www.concretecms.org/download_file/ae9cca19-d76c-458e-a63a-ce9b7b963e1d'
 #    '8.5.6'=>'https://www.concretecms.com/download_file/61dab82f-fb01-47bc-8cf1-deffff890224/9'
 #    '8.5.5'=>'https://marketplace.concretecms.com/download_file/-/view/115589/'
 #    '8.5.4'=>'https://marketplace.concretecms.com/download_file/-/view/113632/'
@@ -122,19 +123,21 @@ UPGRADE_WORKING_DIR="${C5_Version}-upgrade"
 #
 # ==============================
 
+UPGRADE_WORKING_DIR="${C5_Version}-upgrade"
+
 # ---- tablespace option after MySQL 5.7.31
-if [ "$PROD_DB_IF_NO_TABLESPACE" = "TRUE" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "True" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "true" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "t" ]; then
+if [ "$PROD_DB_IF_NO_TABLESPACE" = "TRUE"|"True"|"true"|"t" ]; then
     PROD_MYSQLDUMP_OPTION_TABLESPACE="--no-tablespaces"
-elif [ "$PROD_DB_IF_NO_TABLESPACE" = "FALSE" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "False" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "false" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "f" ]; then
+elif [ "$PROD_DB_IF_NO_TABLESPACE" = "FALSE"|"False"|"false"|"f" ]; then
     PROD_MYSQLDUMP_OPTION_TABLESPACE=""
 else
     echo "c5 Backup ERROR: PROD_DB_IF_NO_TABLESPACE variable is not properly set in the shell script"
     exit
 fi
 # ---- tablespace option after MySQL 5.7.31
-if [ "$BACKUP_DB_IF_NO_TABLESPACE" = "TRUE" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "True" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "true" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "t" ]; then
+if [ "$BACKUP_DB_IF_NO_TABLESPACE" = "TRUE"|"True"|"true"|"t" ]; then
     BACKUP_MYSQLDUMP_OPTION_TABLESPACE="--no-tablespaces"
-elif [ "$BACKUP_DB_IF_NO_TABLESPACE" = "FALSE" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "False" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "false" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "f" ]; then
+elif [ "$BACKUP_DB_IF_NO_TABLESPACE" = "FALSE"|"False"|"false"|"f" ]; then
     BACKUP_MYSQLDUMP_OPTION_TABLESPACE=""
 else
     echo "c5 Backup ERROR: BACKUP_DB_IF_NO_TABLESPACE variable is not properly set in the shell script"
@@ -146,13 +149,20 @@ DO_EVERYTHING="No"
 NOW_TIME=$(date "+%Y%m%d%H%M%S")
 TAR_FILE="${PROJECT_NAME}"_"${NOW_TIME}.tar.gz"
 
-if [ "$C5_Version" = "5.7.5.13" ]; then
-    CONCRETE5_PACKAGE_DIRECTORY_NAME="concrete5.7.5.13"
+# https://unix.stackexchange.com/questions/285924/how-to-compare-a-programs-version-in-a-shell-script
+requiredver="8.0.0"
+if [ "$(printf '%s\n' "$requiredver" "${C5_Version}" | sort -V | head -n1)" = "$requiredver" ]; then 
+  echo "Greater than or equal to ${requiredver}. We are proceeding"
 else
-    CONCRETE5_PACKAGE_DIRECTORY_NAME="concrete5-${C5_Version}"
+  echo "Less than ${requiredver}"
 fi
-CONCRETE5_WORKING_DIRECTORY_NAME="${C5_Version}upgrade_working"
 
+requiredver="9.0.0"
+if [ "$(printf '%s\n' "$requiredver" "${C5_Version}" | sort -V | head -n1)" = "$requiredver" ]; then 
+  CONCRETE5_PACKAGE_DIRECTORY_NAME="concrete-cms-${C5_Version}"
+else
+  CONCRETE5_PACKAGE_DIRECTORY_NAME="concrete5-${C5_Version}"
+fi
 
 # ---- Checking The Options -----
 
@@ -496,14 +506,14 @@ do_db_import() {
     echo "Would you like to import from a file?"
     manual_input
     SQL_FILE="${PROJECT_NAME}_prod_${NOW_TIME}.sql"
-    if [ "${USE_IMPORT_FILE}" != "Yes" ]; then
+    if [ "${USE_IMPORT_FILE}" != "YES"|"Yes"|"yes"|"y"|"t"|"true" ]; then
         do_prod_db_backup
     else 
         set_import_file_location
     fi
     set_develop_db_details
     echo "c5 Import: Beginning import process..."
-    if [ "$BACKUP_DB_EMPTY_DB" = "yes"|"y"|"t"|"true" ]; then
+    if [ "$BACKUP_DB_EMPTY_DB" = "YES"|"Yes"|"yes"|"y"|"t"|"true" ]; then
       echo "c5 Import: Clearing the current database data"
       if [ -n "$BACKUP_DB_PASSWORD" ]; then
         set +e
@@ -516,7 +526,7 @@ do_db_import() {
     echo "c5 Import: Importing Database Data..."
     if [ -n "$BACKUP_DB_PASSWORD" ]; then
         set +e
-        if [ "$USE_IMPORT_FILE" = "Yes" ]; then
+        if [ "$USE_IMPORT_FILE" = "YES"|"Yes"|"yes"|"y"|"t"|"true" ]; then
             mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${IMPORT_FILE}"
         else
             mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${WHERE_TO_SAVE}"/"${SQL_FILE}"
@@ -526,65 +536,31 @@ do_db_import() {
             echo ""
             echo "c5 Import: Production data imported"
             echo ""
-            if [ "$BACKUP_DB_ANONYMIZE_USERS" = "yes"|"y"|"t"|"true" ]; then
+            if [ "$BACKUP_DB_ANONYMIZE_USERS" = "YES"|"Yes"|"yes"|"y"|"t"|"true" ]; then
               echo "c5 Import: Replacing email addresses with dummy address"
               BACKUP_DB_ANONYMIZE_USERS_EXCEPT_OPTION="NOT LIKE '%${BACKUP_DB_ANONYMIZE_USERS_EXCEPT}%'"
               mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE Users SET uEmail='dummy@example.com' WHERE uEmail {$BACKUP_DB_ANONYMIZE_USERS_EXCEPT_OPTION};"
             fi
-            if [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "yes"|"y"|"t"|"true" ]; then
+            if [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "YES"|"Yes"|"yes"|"y"|"t"|"true" ]; then
               echo "c5 Import: Setting storage to 'Default'"
               mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE FileStorageLocations SET fslIsDefault='0';UPDATE FileStorageLocations SET fslIsDefault='1' WHERE fslID='1';"
             fi
         else
             echo "c5 Import: ERROR: MySQL password failed. You must type MySQL password manually. OR hit ENTER if you want to stop this script now."
-            set -e
-            if [ "$USE_IMPORT_FILE" = "Yes" ]; then
-                mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${IMPORT_FILE}"
-            else
-                mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${WHERE_TO_SAVE}"/"${SQL_FILE}"
-            fi
-            echo ""
-            echo "c5 Import: Production data imported"
-            echo ""
-            if [ "$BACKUP_DB_ANONYMIZE_USERS" = "yes"|"y"|"t"|"true" ]; then
-              echo "c5 Import: Replacing email addresses with dummy address"
-              BACKUP_DB_ANONYMIZE_USERS_EXCEPT_OPTION="NOT LIKE '%${BACKUP_DB_ANONYMIZE_USERS_EXCEPT}%'"
-              mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE Users SET uEmail='dummy@example.com' WHERE uEmail {$BACKUP_DB_ANONYMIZE_USERS_EXCEPT_OPTION};"
-            fi
-            if [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "yes"|"y"|"t"|"true" ]; then
-              echo "c5 Import: Setting storage to 'Default'"
-              mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE FileStorageLocations SET fslIsDefault='0';UPDATE FileStorageLocations SET fslIsDefault='1' WHERE fslID='1';"
-            fi
+            do_db_import_nomysqlpassword
         fi
         set -e
     else
-        echo "c5 Backup: Enter the MySQL password..."
-        if [ "$USE_IMPORT_FILE" = "Yes" ]; then
-            mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${IMPORT_FILE}"
-        else
-            mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${WHERE_TO_SAVE}"/"${SQL_FILE}"
-        fi
-        echo ""
-        echo "c5 Import: Production data imported"
-        echo ""
-        if [ "$BACKUP_DB_ANONYMIZE_USERS" = "yes"|"y"|"t"|"true" ]; then
-          echo "c5 Import: Replacing email addresses with dummy address"
-          BACKUP_DB_ANONYMIZE_USERS_EXCEPT_OPTION="NOT LIKE '%${BACKUP_DB_ANONYMIZE_USERS_EXCEPT}%'"
-          mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE Users SET uEmail='dummy@example.com' WHERE uEmail {$BACKUP_DB_ANONYMIZE_USERS_EXCEPT_OPTION};"
-        fi
-        if [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "yes"|"y"|"t"|"true" ]; then
-          echo "c5 Import: Setting storage to 'Default'"
-          mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE FileStorageLocations SET fslIsDefault='0';UPDATE FileStorageLocations SET fslIsDefault='1' WHERE fslID='1';"
-        fi
+        echo "c5 Import: Enter the MySQL password..."
+        do_db_import_nomysqlpassword
     fi
-    echo "c5 Backup: Tar SQL"
-    if [ "$USE_IMPORT_FILE" = "Yes" ]; then
-        tar -cvzpf "${WHERE_TO_SAVE}"/"${TAR_FILE}" "${IMPORT_FILE}"
-        echo "c5 Backup: Now removing SQL dump file..."
-        rm -f "${IMPORT_FILE}"
+    if [ "$USE_IMPORT_FILE" = "YES"|"Yes"|"yes"|"y"|"t"|"true" ]; then
+      # Do nothing
     else
+        echo "c5 Import: Tar SQL"
+        echo "c5 Import: Saving dumped SQL file as a tar as a backup..."
         tar -cvzpf "${WHERE_TO_SAVE}"/"${TAR_FILE}" "${WHERE_TO_SAVE}/${SQL_FILE}"
-        echo "c5 Backup: Now removing SQL dump file..."
+        echo "c5 Import: Now removing SQL dump file..."
         rm -f "${WHERE_TO_SAVE}/${SQL_FILE}"
     fi
     
@@ -592,7 +568,7 @@ do_db_import() {
 
 do_db_import_nomysqlpassword() {
   set -e
-  if [ "$USE_IMPORT_FILE" = "Yes" ]; then
+  if [ "$USE_IMPORT_FILE" = "YES"|"Yes"|"yes"|"y"|"t"|"true" ]; then
       mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${IMPORT_FILE}"
   else
       mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${WHERE_TO_SAVE}"/"${SQL_FILE}"
