@@ -472,8 +472,6 @@ do_prod_db_backup() {
         echo "c5 Backup: Enter the MySQL password..."
         mysqldump -h ${PROD_DB_HOST} --port=${PROD_MYSQL_PORT} -u ${PROD_DB_USERNAME} -p --single-transaction --default-character-set=${MYSQL_CHARASET} ${PROD_MYSQLDUMP_OPTION_TABLESPACE} "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
     fi
-    echo "c5 Backup: Backup SQL and config file into a tar"
-    tar -czvf ${WHERE_TO_SAVE}/${BACKUP_FILE}
 }
 
 do_db_import() {
