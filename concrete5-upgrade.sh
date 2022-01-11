@@ -126,18 +126,18 @@ fi
 UPGRADE_WORKING_DIR="${C5_Version}-upgrade"
 
 # ---- tablespace option after MySQL 5.7.31
-if [ "$PROD_DB_IF_NO_TABLESPACE" = "TRUE"|"True"|"true"|"t" ]; then
+if [ "$PROD_DB_IF_NO_TABLESPACE" = "TRUE" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "True" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "true" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "t" ]; then
     PROD_MYSQLDUMP_OPTION_TABLESPACE="--no-tablespaces"
-elif [ "$PROD_DB_IF_NO_TABLESPACE" = "FALSE"|"False"|"false"|"f" ]; then
+elif [ "$PROD_DB_IF_NO_TABLESPACE" = "FALSE" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "False" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "false" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "f" ]; then
     PROD_MYSQLDUMP_OPTION_TABLESPACE=""
 else
     echo "c5 Backup ERROR: PROD_DB_IF_NO_TABLESPACE variable is not properly set in the shell script"
     exit
 fi
 # ---- tablespace option after MySQL 5.7.31
-if [ "$BACKUP_DB_IF_NO_TABLESPACE" = "TRUE"|"True"|"true"|"t" ]; then
+if [ "$BACKUP_DB_IF_NO_TABLESPACE" = "TRUE" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "True" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "true" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "t" ]; then
     BACKUP_MYSQLDUMP_OPTION_TABLESPACE="--no-tablespaces"
-elif [ "$BACKUP_DB_IF_NO_TABLESPACE" = "FALSE"|"False"|"false"|"f" ]; then
+elif [ "$BACKUP_DB_IF_NO_TABLESPACE" = "FALSE" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "False" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "false" ] || [ "$BACKUP_DB_IF_NO_TABLESPACE" = "f" ]; then
     BACKUP_MYSQLDUMP_OPTION_TABLESPACE=""
 else
     echo "c5 Backup ERROR: BACKUP_DB_IF_NO_TABLESPACE variable is not properly set in the shell script"
@@ -506,14 +506,14 @@ do_db_import() {
     echo "Would you like to import from a file?"
     manual_input
     SQL_FILE="${PROJECT_NAME}_prod_${NOW_TIME}.sql"
-    if [ "${USE_IMPORT_FILE}" != "YES"|"Yes"|"yes"|"y"|"t"|"true" ]; then
+    if [ "${USE_IMPORT_FILE}" != "Yes" ] || [ "${USE_IMPORT_FILE}" != "YES" ] || [ "${USE_IMPORT_FILE}" != "yes" ] || [ "${USE_IMPORT_FILE}" != "TRUE" ] || [ "${USE_IMPORT_FILE}" != "True" ] || [ "${USE_IMPORT_FILE}" != "true" ]; then
         do_prod_db_backup
     else 
         set_import_file_location
     fi
     set_develop_db_details
     echo "c5 Import: Beginning import process..."
-    if [ "$BACKUP_DB_EMPTY_DB" = "YES"|"Yes"|"yes"|"y"|"t"|"true" ]; then
+    if [ "$BACKUP_DB_EMPTY_DB" = "YES" ] || [ "$BACKUP_DB_EMPTY_DB" = "Yes" ] || [ "$BACKUP_DB_EMPTY_DB" = "yes" ] || [ "$BACKUP_DB_EMPTY_DB" = "TRUE" ] || [ "$BACKUP_DB_EMPTY_DB" = "True" ] || [ "$BACKUP_DB_EMPTY_DB" = "true" ]; then
       echo "c5 Import: Clearing the current database data"
       if [ -n "$BACKUP_DB_PASSWORD" ]; then
         set +e
@@ -526,7 +526,7 @@ do_db_import() {
     echo "c5 Import: Importing Database Data..."
     if [ -n "$BACKUP_DB_PASSWORD" ]; then
         set +e
-        if [ "$USE_IMPORT_FILE" = "YES"|"Yes"|"yes"|"y"|"t"|"true" ]; then
+        if [ "$USE_IMPORT_FILE" = "YES" ] || [ "$USE_IMPORT_FILE" = "Yes" ] || [ "$USE_IMPORT_FILE" = "yes" ] || [ "$USE_IMPORT_FILE" = "TRUE" ] || [ "$USE_IMPORT_FILE" = "True" ] || [ "$USE_IMPORT_FILE" = "true" ]; then
             mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${IMPORT_FILE}"
         else
             mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${WHERE_TO_SAVE}"/"${SQL_FILE}"
@@ -536,12 +536,12 @@ do_db_import() {
             echo ""
             echo "c5 Import: Production data imported"
             echo ""
-            if [ "$BACKUP_DB_ANONYMIZE_USERS" = "YES"|"Yes"|"yes"|"y"|"t"|"true" ]; then
+            if [ "$BACKUP_DB_ANONYMIZE_USERS" = "YES" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "Yes" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "yes" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "TRUE" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "True" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "true" ]; then
               echo "c5 Import: Replacing email addresses with dummy address"
               BACKUP_DB_ANONYMIZE_USERS_EXCEPT_OPTION="NOT LIKE '%${BACKUP_DB_ANONYMIZE_USERS_EXCEPT}%'"
               mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE Users SET uEmail='dummy@example.com' WHERE uEmail {$BACKUP_DB_ANONYMIZE_USERS_EXCEPT_OPTION};"
             fi
-            if [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "YES"|"Yes"|"yes"|"y"|"t"|"true" ]; then
+            if [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "YES" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "Yes" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "yes" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "TRUE" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "True" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "true" ]; then
               echo "c5 Import: Setting storage to 'Default'"
               mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE FileStorageLocations SET fslIsDefault='0';UPDATE FileStorageLocations SET fslIsDefault='1' WHERE fslID='1';"
             fi
@@ -554,7 +554,7 @@ do_db_import() {
         echo "c5 Import: Enter the MySQL password..."
         do_db_import_nomysqlpassword
     fi
-    if [ "$USE_IMPORT_FILE" = "YES"|"Yes"|"yes"|"y"|"t"|"true" ]; then
+    if [ "$USE_IMPORT_FILE" = "YES" ] || [ "$USE_IMPORT_FILE" = "Yes" ] || [ "$USE_IMPORT_FILE" = "yes" ] || [ "$USE_IMPORT_FILE" = "TRUE" ] || [ "$USE_IMPORT_FILE" = "True" ] || [ "$USE_IMPORT_FILE" = "true" ]; then
       # Do nothing
     else
         echo "c5 Import: Tar SQL"
@@ -568,7 +568,7 @@ do_db_import() {
 
 do_db_import_nomysqlpassword() {
   set -e
-  if [ "$USE_IMPORT_FILE" = "YES"|"Yes"|"yes"|"y"|"t"|"true" ]; then
+  if [ "$USE_IMPORT_FILE" = "YES" ] || [ "$USE_IMPORT_FILE" = "Yes" ]; then
       mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${IMPORT_FILE}"
   else
       mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${WHERE_TO_SAVE}"/"${SQL_FILE}"
@@ -576,12 +576,12 @@ do_db_import_nomysqlpassword() {
   echo ""
   echo "c5 Import: Production data imported"
   echo ""
-  if [ "$BACKUP_DB_ANONYMIZE_USERS" = "yes"|"y"|"t"|"true" ]; then
+  if [ "$BACKUP_DB_ANONYMIZE_USERS" = "YES" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "Yes" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "yes" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "TRUE" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "True" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "true" ]; then
     echo "c5 Import: Replacing email addresses with dummy address"
     BACKUP_DB_ANONYMIZE_USERS_EXCEPT_OPTION="NOT LIKE '%${BACKUP_DB_ANONYMIZE_USERS_EXCEPT}%'"
     mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE Users SET uEmail='dummy@example.com' WHERE uEmail {$BACKUP_DB_ANONYMIZE_USERS_EXCEPT_OPTION};"
   fi
-  if [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "yes"|"y"|"t"|"true" ]; then
+  if [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "YES" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "Yes" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "yes" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "TRUE" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "True" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "true" ]; then
     echo "c5 Import: Setting storage to 'Default'"
     mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE FileStorageLocations SET fslIsDefault='0';UPDATE FileStorageLocations SET fslIsDefault='1' WHERE fslID='1';"
   fi
