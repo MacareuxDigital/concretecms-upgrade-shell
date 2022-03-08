@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Upgrade Script for Concrete CMS
 # Supports Version 8.x only.
 # ----------
-# Version 3.0.0
+# Version 3.0.2
 # By Derek Cameron & Katz Ueno
 
 # INSTRUCTION:
@@ -72,11 +72,11 @@ BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION="no"
 C5_Version=$1
 CONCRETE5_PACKAGE_DOWNLOAD=$2
 
-if [ ! $C5_Version ]; then
+if [ ! "$C5_Version" ]; then
     C5_Version="8.5.7"
 fi
 
-if [ ! $CONCRETE5_PACKAGE_DOWNLOAD ]; then
+if [ ! "$CONCRETE5_PACKAGE_DOWNLOAD" ]; then
     CONCRETE5_PACKAGE_DOWNLOAD="https://www.concretecms.org/download_file/ae9cca19-d76c-458e-a63a-ce9b7b963e1d"
 fi
 
@@ -147,7 +147,7 @@ fi
 DELETE_WORKFILE="No"
 DO_EVERYTHING="No"
 NOW_TIME=$(date "+%Y%m%d%H%M%S")
-TAR_FILE="${PROJECT_NAME}"_"${NOW_TIME}.tar.gz"
+TAR_FILE="${PROJECT_NAME}_${NOW_TIME}.tar.gz"
 
 # https://unix.stackexchange.com/questions/285924/how-to-compare-a-programs-version-in-a-shell-script
 requiredver="8.0.0"
@@ -518,6 +518,7 @@ do_db_import() {
       if [ -n "$BACKUP_DB_PASSWORD" ]; then
         set +e
         mysqldump -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --add-drop-table --no-data ${BACKUP_DB_DATABASE} | grep -e '^DROP \| FOREIGN_KEY_CHECKS' | mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} ${BACKUP_DB_DATABASE}
+      fi
       ret=$?
       if [ "$ret" = 0 ]; then
         echo "c5 Import: Production data imported"
@@ -554,16 +555,13 @@ do_db_import() {
         echo "c5 Import: Enter the MySQL password..."
         do_db_import_nomysqlpassword
     fi
-    if [ "$USE_IMPORT_FILE" = "YES" ] || [ "$USE_IMPORT_FILE" = "Yes" ] || [ "$USE_IMPORT_FILE" = "yes" ] || [ "$USE_IMPORT_FILE" = "TRUE" ] || [ "$USE_IMPORT_FILE" = "True" ] || [ "$USE_IMPORT_FILE" = "true" ]; then
-      # Do nothing
-    else
+    if [ "$USE_IMPORT_FILE" = "NO" ] || [ "$USE_IMPORT_FILE" = "No" ] || [ "$USE_IMPORT_FILE" = "no" ] || [ "$USE_IMPORT_FILE" = "FALSE" ] || [ "$USE_IMPORT_FILE" = "False" ] || [ "$USE_IMPORT_FILE" = "false" ]; then
         echo "c5 Import: Tar SQL"
         echo "c5 Import: Saving dumped SQL file as a tar as a backup..."
         tar -cvzpf "${WHERE_TO_SAVE}"/"${TAR_FILE}" "${WHERE_TO_SAVE}/${SQL_FILE}"
         echo "c5 Import: Now removing SQL dump file..."
         rm -f "${WHERE_TO_SAVE}/${SQL_FILE}"
     fi
-    
 }
 
 do_db_import_nomysqlpassword() {
