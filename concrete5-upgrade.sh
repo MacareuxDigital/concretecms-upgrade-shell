@@ -912,7 +912,8 @@ do_upgrade() {
 
 update_file_permissions() {
     echo "c5 Upgrade: Updating file folder permissions"
-    sudo chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/config
+    sudo chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/config/doctrine
+    sudo chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/config/generated_overrides
     sudo chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/files
     sudo chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/languages
     sudo chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/concrete
