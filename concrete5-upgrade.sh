@@ -3,7 +3,7 @@
 # Upgrade Script for Concrete CMS
 # Supports Version 8.x only.
 # ----------
-# Version 3.0.2
+# Version 3.0.3
 # By Derek Cameron & Katz Ueno
 
 # INSTRUCTION:
@@ -123,7 +123,7 @@ fi
 #
 # ==============================
 
-UPGRADE_WORKING_DIR="${C5_Version}-upgrade"
+CONCRETE5_WORKING_DIRECTORY_NAME="${C5_Version}upgrade_working"
 
 # ---- tablespace option after MySQL 5.7.31
 if [ "$PROD_DB_IF_NO_TABLESPACE" = "TRUE" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "True" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "true" ] || [ "$PROD_DB_IF_NO_TABLESPACE" = "t" ]; then
