@@ -73,11 +73,11 @@ C5_Version=$1
 CONCRETE5_PACKAGE_DOWNLOAD=$2
 
 if [ ! "$C5_Version" ]; then
-    C5_Version="8.5.7"
+    C5_Version="8.5.8"
 fi
 
 if [ ! "$CONCRETE5_PACKAGE_DOWNLOAD" ]; then
-    CONCRETE5_PACKAGE_DOWNLOAD="https://www.concretecms.org/download_file/ae9cca19-d76c-458e-a63a-ce9b7b963e1d"
+    CONCRETE5_PACKAGE_DOWNLOAD="https://www.concretecms.com/download_file/15c31837-ffdf-45fd-9f7c-d353ec60a2d9"
 fi
 
 ## Option DEBUG
@@ -89,8 +89,12 @@ fi
 # CONCRETE5_PACKAGE_DOWNLOAD="https://marketplace.concretecms.com/latest.zip"
 
 # Concrete 5 Download Links
+#    '9.1.1'=>'https://www.concretecms.com/download_file/c8c925b8-9a63-4b23-aff3-cb0e76a0e168'
+#    '9.1.0'=>'https://www.concretecms.com/download_file/fc6337ea-3e83-4cb6-b6a0-bd292fe2e2a8/'
+#    '9.0.2'=>'https://www.concretecms.org/download_file/3254ddbf-35f0-4c92-8ed1-1fb6b9c0f0d4'
 #    '9.0.1'=>'https://www.concretecms.org/download_file/dc6d0589-6639-40ac-8c21-8f9f025b7e34'
 #    '9.0.0'=>'https://www.concretecms.com/download_file/29fd2f63-3f52-47d8-80a7-08be47d4ed07'
+#    '8.5.8'=>'https://www.concretecms.com/download_file/15c31837-ffdf-45fd-9f7c-d353ec60a2d9'
 #    '8.5.7'=>'https://www.concretecms.org/download_file/ae9cca19-d76c-458e-a63a-ce9b7b963e1d'
 #    '8.5.6'=>'https://www.concretecms.com/download_file/61dab82f-fb01-47bc-8cf1-deffff890224/9'
 #    '8.5.5'=>'https://marketplace.concretecms.com/download_file/-/view/115589/'
