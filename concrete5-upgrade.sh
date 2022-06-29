@@ -3,7 +3,7 @@
 # Upgrade Script for Concrete CMS
 # Supports Version 8.x only.
 # ----------
-# Version 3.0.3
+# Version 3.0.4
 # By Derek Cameron & Katz Ueno
 
 # INSTRUCTION:
@@ -161,7 +161,7 @@ else
   echo "Less than ${requiredver}"
 fi
 
-requiredver="9.0.0"
+requiredver="8.5.8"
 if [ "$(printf '%s\n' "$requiredver" "${C5_Version}" | sort -V | head -n1)" = "$requiredver" ]; then 
   CONCRETE5_PACKAGE_DIRECTORY_NAME="concrete-cms-${C5_Version}"
 else
