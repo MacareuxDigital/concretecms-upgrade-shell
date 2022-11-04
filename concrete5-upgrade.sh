@@ -73,11 +73,11 @@ C5_Version=$1
 CONCRETE5_PACKAGE_DOWNLOAD=$2
 
 if [ ! "$C5_Version" ]; then
-    C5_Version="8.5.11"
+    C5_Version="8.5.12"
 fi
 
 if [ ! "$CONCRETE5_PACKAGE_DOWNLOAD" ]; then
-    CONCRETE5_PACKAGE_DOWNLOAD="https://www.concretecms.org/download_file/3808aac2-1640-4d89-9157-f0a95762f511"
+    CONCRETE5_PACKAGE_DOWNLOAD="https://www.concretecms.org/download_file/2bba0898-1539-48ff-b273-0cbddc7588da"
 fi
 
 ## Option DEBUG
@@ -95,6 +95,7 @@ fi
 #    '9.0.1'=>'https://www.concretecms.org/download_file/dc6d0589-6639-40ac-8c21-8f9f025b7e34'
 #    '9.0.0'=>'https://www.concretecms.com/download_file/29fd2f63-3f52-47d8-80a7-08be47d4ed07'
 #    '8.5.11'=>'https://www.concretecms.org/download_file/3808aac2-1640-4d89-9157-f0a95762f511'
+#    '8.5.12'=>'https://www.concretecms.org/download_file/2bba0898-1539-48ff-b273-0cbddc7588da'
 #    '8.5.9'=>'https://www.concretecms.org/download_file/7730d563-57d5-4433-b0ae-147db99fbf0d'
 #    '8.5.8'=>'https://www.concretecms.com/download_file/15c31837-ffdf-45fd-9f7c-d353ec60a2d9'
 #    '8.5.7'=>'https://www.concretecms.org/download_file/ae9cca19-d76c-458e-a63a-ce9b7b963e1d'
