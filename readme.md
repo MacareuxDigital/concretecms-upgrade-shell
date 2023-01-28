@@ -87,6 +87,7 @@ Wait until the commands finish processing.
 
 Version | Updates
 ----|----------
+3.0.1 | - Changed filename from concrete5 to concretecms
 3.0.0 | - Version 9 support & validation check not to run upgrade for 5.7 and earlier versions<br>- Add a `BACKUP_DB_EMPTY_DB` option to empty backup database before importing<br>- Add a BACKUP_DB_ANONYMIZE_USERS option when backing up to backup database<br>- Add a file storage location option  when backing up to backup database
 2.0.1 | - Readme: change concrete5 to Concrete CMS<br>- Bug fix which prod db backup ends with error with empty tar command
 2.0 | - Enable/Disable Maintenance Mode<br>- New config & database backup option<br>- Change from wget to curl<br>- Bug fix: Was unable to run the script with no option<br>- Readme
