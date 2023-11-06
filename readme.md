@@ -68,15 +68,16 @@ If you want to change it to older version, change it accordingly.
 Obtain your desired Concrete CMS version and Download URL.
 
 For legacy (newer) versions, visit [Concrete CMS website](https://marketplace.concretecms.com/developers/developer-downloads) and get download URL.
+When executing the shell script, concretecms-upgrade.conf must exist in the same directory.
 
 ```
-sh concrete5-upgrade.sh [Concrete CMS version] [ZIP Download URL]
+sh concretecms-upgrade.sh [Concrete CMS version] [ZIP Download URL]
 ```
 
-In case of 8.5.6
+In case of 8.5.12
 
 ```
-sh concrete5-upgrade.sh 8.5.6 https://www.concretecms.com/download_file/61dab82f-fb01-47bc-8cf1-deffff890224
+sh concrete5-upgrade.sh 8.5.12 https://www.concretecms.org/download_file/2bba0898-1539-48ff-b273-0cbddc7588da
 ```
 
 Enter the option that you would like to execute.
@@ -87,6 +88,7 @@ Wait until the commands finish processing.
 
 Version | Updates
 ----|----------
+4.0.0 | - Separated variables from shell scripts.<br>- Changed so that when an error occurs during the upgrade, the shell stops in the middle of the process.
 3.0.1 | - Changed filename from concrete5 to concretecms
 3.0.0 | - Version 9 support & validation check not to run upgrade for 5.7 and earlier versions<br>- Add a `BACKUP_DB_EMPTY_DB` option to empty backup database before importing<br>- Add a BACKUP_DB_ANONYMIZE_USERS option when backing up to backup database<br>- Add a file storage location option  when backing up to backup database
 2.0.1 | - Readme: change concrete5 to Concrete CMS<br>- Bug fix which prod db backup ends with error with empty tar command

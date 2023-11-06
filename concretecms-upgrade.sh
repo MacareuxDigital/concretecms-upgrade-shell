@@ -1,9 +1,9 @@
 #!/bin/bash
 #
 # Upgrade Script for Concrete CMS
-# Supports Version 8.x only.
+# Supports Version 8.x and above.
 # ----------
-# Version 3.0.5
+# Version 4.0.0
 # By Derek Cameron & Katz Ueno
 
 # INSTRUCTION:
@@ -12,62 +12,13 @@
 
 # USE IT AT YOUR OWN RISK!
 
-# VARIABLES
-# ----------
+#-----------------------------------------------------------
+# Importing parameters
+# concretecms-upgrade.conf should be stored in the same directory as concretecms-upgrade.sh
+#-----------------------------------------------------------
 
+source ./concretecms-upgrade.conf
 
-# Server Config
-## Concrete CMS Location
-WHERE_IS_CONCRETE5="/var/www/vhosts/concrete5"
-# enter sudo command OR comment it out to execute as SSH user without sudo
-DO_SUDO="sudo -u apache " # Make sure to have a space at the end.
-## Permissions
-USER_PERMISSIONS="apache:apache"
-
-# Backup Variables
-## name of backup files
-PROJECT_NAME="Concrete"
-WHERE_TO_SAVE="/var/www/vhosts/backups"
-
-# Set DB's default charaset. Make sure to set the proper MySQL character encoding to avoid character corruption
-MYSQL_CHARASET="utf8mb4"
-
-# Production DB Details to backup
-PROD_DB_HOST="localhost"
-PROD_DB_USERNAME="c5"
-PROD_DB_PASSWORD="12345"
-PROD_DB_DATABASE="c5"
-PROD_DB_PORT="3306"
-# Set "true" if you're using MySQL 5.7.31 or later. (true or false)
-PROD_DB_IF_NO_TABLESPACE="false"
-
-# Database Copy Feature
-## Use Import file instead of production database (Yes / No)
-USE_IMPORT_FILE="No"
-## Specify the SQL file absolute path if you want to import certain file
-IMPORT_FILE=""
-
-## Backup DB details to backup/import to
-BACKUP_DB_HOST="localhost"
-BACKUP_DB_USERNAME=""
-BACKUP_DB_PASSWORD=""
-BACKUP_DB_DATABASE=""
-BACKUP_DB_PORT="3306"
-# Set "true" if you're using MySQL 5.7.31 or later. (true or false)
-BACKUP_DB_IF_NO_TABLESPACE="false"
-# Set "yes" if you want to empty all database data before importing. It is recommended to do so especially if you are restoring from upgrade failure because schema may have changed.
-BACKUP_DB_EMPTY_DB="yes"
-# Set "yes" if you want to anonymize user's email to "dummy@example.com"
-BACKUP_DB_ANONYMIZE_USERS="no"
-# Even you set yes to anonymize emails, you can skip anonymizing email which contains the following letters.
-BACKUP_DB_ANONYMIZE_USERS_EXCEPT="concrete5.co.jp"
-# If you use multiple file storage, You can set default file storage to "0" when copying, then you can avoid accidental file upload to production area.
-BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION="no"
-## Option DEBUG
-#echo "----------"
-#echo "DEBUG: option 1 $1"
-#echo "DEBUG: option 2 $2"
-#echo "----------"
 
 C5_Version=$1
 CONCRETE5_PACKAGE_DOWNLOAD=$2
@@ -89,6 +40,8 @@ fi
 # CONCRETE5_PACKAGE_DOWNLOAD="https://marketplace.concretecms.com/latest.zip"
 
 # Concrete 5 Download Links
+#    '9.2.1'=>'https://www.concretecms.org/download_file/71434b78-374b-4283-8d7d-da4fea982a13'
+#    '9.2.0'=>'https://www.concretecms.org/download_file/277af433-97d4-4817-b48c-a758cd8adf96'
 #    '9.1.3'=>'https://www.concretecms.com/download_file/f7867cc1-3cbd-45b6-8df7-66ea2151eda0'
 #    '9.1.2'=>'https://www.concretecms.com/download_file/e005c931-9ee3-4fb7-895f-760bb01f2c4d'
 #    '9.1.1'=>'https://www.concretecms.com/download_file/c8c925b8-9a63-4b23-aff3-cb0e76a0e168'
@@ -812,6 +765,11 @@ do_upgrade() {
     echo "c5 Upgrade: Switching current directory to"
     echo "${WHERE_IS_CONCRETE5}"
     cd ${WHERE_IS_CONCRETE5}
+
+    if [ $? -ne 0 ]; then
+        echo "No such directory exists!"
+        exit 1
+    fi
     echo "c5 Upgrade: Creating a working concrete5 directory: ${CONCRETE5_WORKING_DIRECTORY_NAME}"
     mkdir ${WHERE_IS_CONCRETE5}/${CONCRETE5_WORKING_DIRECTORY_NAME}
     echo "c5 Upgrade: Switching to inside of concrete5 directory"
@@ -871,6 +829,12 @@ do_upgrade() {
         chmod u+x ${WHERE_IS_CONCRETE5}/concrete/bin/concrete5
         echo "c5 Upgrade: Now running upgrade script"
         ${DO_SUDO}${WHERE_IS_CONCRETE5}/concrete/bin/concrete5 c5:update
+
+        if [ $? -ne 0 ]; then
+            echo "ERROR: concrete/bin/concrete5 c5:update Command failed.!"
+            exit 1
+        fi
+
     else
         echo "c5 Upgrade: ========================================"
         echo "c5 Upgrade:         PLEASE upgrade MANUALLY!!"
@@ -878,6 +842,7 @@ do_upgrade() {
         echo "c5 Upgrade: Please execute upgrade."
         echo "c5 Upgrade: - Enable core update option, or"
         echo "c5 Upgrade: - visit [concrete5]/index.php/ccm/system/upgrade to execute upgrade"
+        exit 1
     fi
 
     echo "c5 Upgrade: ..."
@@ -904,12 +869,12 @@ do_upgrade() {
         echo "c5 Upgrade: Make sure to delete them after you've checked if everything works."
     fi
 
-    if [ -z "$DO_SUDO" ]; then
+    if [ -n "$DO_SUDO" ]; then
       update_file_permissions
     fi
     install_languages
     # disable_maintenance_mode
-    if [ -z "$DO_SUDO" ]; then
+    if [ -n "$DO_SUDO" ]; then
       update_file_permissions
     fi
 
@@ -927,6 +892,10 @@ update_file_permissions() {
     sudo chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/application/languages
     sudo chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/concrete
     # chown -R ${USER_PERMISSIONS} ${WHERE_IS_CONCRETE5}/packages
+    if [ $? -ne 0 ]; then
+        echo "ERROR: Failed to update file permissions!"
+        exit 1
+    fi
 }
 
 install_languages() {
