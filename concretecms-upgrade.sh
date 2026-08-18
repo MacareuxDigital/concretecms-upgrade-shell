@@ -649,8 +649,8 @@ set_prod_db_details() {
             esac
         done;
     fi
-    if [ -z "$PROD_DB_DATABASE" ] || [ "$PROD_DB_DATBASE" = " " ]; then
-        while [ -z "$PROD_DB_USERNAME" ]; do 
+    if [ -z "$PROD_DB_DATABASE" ] || [ "$PROD_DB_DATABASE" = " " ]; then
+        while [ -z "$PROD_DB_DATABASE" ]; do 
             echo -en "Please enter the database name which you would like to use : "
             read PROD_DB_DATABASE
             case "$PROD_DB_DATABASE" in
