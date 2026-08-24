@@ -445,12 +445,12 @@ do_prod_db_backup() {
         else
             echo "c5 Backup: ERROR: MySQL password failed. You must type MySQL password manually. OR hit ENTER if you want to stop this script now."
             set -e
-            mysqldump -h ${PROD_DB_HOST} --port=${PROD_MYSQL_PORT} -u ${PROD_DB_USERNAME} -p --single-transaction --default-character-set=${MYSQL_CHARASET} ${PROD_MYSQLDUMP_OPTION_TABLESPACE} "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+            mysqldump -h ${PROD_DB_HOST} --port=${PROD_DB_PORT} -u ${PROD_DB_USERNAME} -p --single-transaction --default-character-set=${MYSQL_CHARASET} ${PROD_MYSQLDUMP_OPTION_TABLESPACE} "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
         fi
             set -e
     else
         echo "c5 Backup: Enter the MySQL password..."
-        mysqldump -h ${PROD_DB_HOST} --port=${PROD_MYSQL_PORT} -u ${PROD_DB_USERNAME} -p --single-transaction --default-character-set=${MYSQL_CHARASET} ${PROD_MYSQLDUMP_OPTION_TABLESPACE} "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+        mysqldump -h ${PROD_DB_HOST} --port=${PROD_DB_PORT} -u ${PROD_DB_USERNAME} -p --single-transaction --default-character-set=${MYSQL_CHARASET} ${PROD_MYSQLDUMP_OPTION_TABLESPACE} "${PROD_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
     fi
 }
 
@@ -479,7 +479,7 @@ do_db_import() {
       echo "c5 Import: Clearing the current database data"
       if [ -n "$BACKUP_DB_PASSWORD" ]; then
         set +e
-        mysqldump -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --add-drop-table --no-data ${BACKUP_DB_DATABASE} | grep -e '^DROP \| FOREIGN_KEY_CHECKS' | mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} ${BACKUP_DB_DATABASE}
+        mysqldump -h ${BACKUP_DB_HOST} --port=${BACKUP_DB_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --add-drop-table --no-data ${BACKUP_DB_DATABASE} | grep -e '^DROP \| FOREIGN_KEY_CHECKS' | mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_DB_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} ${BACKUP_DB_DATABASE}
       fi
       ret=$?
       if [ "$ret" = 0 ]; then
@@ -490,9 +490,9 @@ do_db_import() {
     if [ -n "$BACKUP_DB_PASSWORD" ]; then
         set +e
         if [ "$USE_IMPORT_FILE" = "YES" ] || [ "$USE_IMPORT_FILE" = "Yes" ] || [ "$USE_IMPORT_FILE" = "yes" ] || [ "$USE_IMPORT_FILE" = "TRUE" ] || [ "$USE_IMPORT_FILE" = "True" ] || [ "$USE_IMPORT_FILE" = "true" ]; then
-            mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${IMPORT_FILE}"
+            mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_DB_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${IMPORT_FILE}"
         else
-            mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+            mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_DB_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${WHERE_TO_SAVE}"/"${SQL_FILE}"
         fi
         ret=$?
         if [ "$ret" = 0 ]; then
@@ -502,11 +502,11 @@ do_db_import() {
             if [ "$BACKUP_DB_ANONYMIZE_USERS" = "YES" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "Yes" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "yes" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "TRUE" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "True" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "true" ]; then
               echo "c5 Import: Replacing email addresses with dummy address"
               BACKUP_DB_ANONYMIZE_USERS_EXCEPT_OPTION="NOT LIKE '%${BACKUP_DB_ANONYMIZE_USERS_EXCEPT}%'"
-              mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE Users SET uEmail='dummy@example.com' WHERE uEmail {$BACKUP_DB_ANONYMIZE_USERS_EXCEPT_OPTION};"
+              mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_DB_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE Users SET uEmail='dummy@example.com' WHERE uEmail ${BACKUP_DB_ANONYMIZE_USERS_EXCEPT_OPTION};"
             fi
             if [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "YES" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "Yes" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "yes" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "TRUE" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "True" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "true" ]; then
               echo "c5 Import: Setting storage to 'Default'"
-              mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE FileStorageLocations SET fslIsDefault='0';UPDATE FileStorageLocations SET fslIsDefault='1' WHERE fslID='1';"
+              mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_DB_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE FileStorageLocations SET fslIsDefault='0';UPDATE FileStorageLocations SET fslIsDefault='1' WHERE fslID='1';"
             fi
         else
             echo "c5 Import: ERROR: MySQL password failed. You must type MySQL password manually. OR hit ENTER if you want to stop this script now."
@@ -529,9 +529,9 @@ do_db_import() {
 do_db_import_nomysqlpassword() {
   set -e
   if [ "$USE_IMPORT_FILE" = "YES" ] || [ "$USE_IMPORT_FILE" = "Yes" ]; then
-      mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${IMPORT_FILE}"
+      mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_DB_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${IMPORT_FILE}"
   else
-      mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+      mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_DB_PORT} -u ${BACKUP_DB_USERNAME} -p --default-character-set=${MYSQL_CHARASET} "${BACKUP_DB_DATABASE}" < "${WHERE_TO_SAVE}"/"${SQL_FILE}"
   fi
   echo ""
   echo "c5 Import: Production data imported"
@@ -539,11 +539,11 @@ do_db_import_nomysqlpassword() {
   if [ "$BACKUP_DB_ANONYMIZE_USERS" = "YES" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "Yes" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "yes" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "TRUE" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "True" ] || [ "$BACKUP_DB_ANONYMIZE_USERS" = "true" ]; then
     echo "c5 Import: Replacing email addresses with dummy address"
     BACKUP_DB_ANONYMIZE_USERS_EXCEPT_OPTION="NOT LIKE '%${BACKUP_DB_ANONYMIZE_USERS_EXCEPT}%'"
-    mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE Users SET uEmail='dummy@example.com' WHERE uEmail {$BACKUP_DB_ANONYMIZE_USERS_EXCEPT_OPTION};"
+    mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_DB_PORT} -u ${BACKUP_DB_USERNAME} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE Users SET uEmail='dummy@example.com' WHERE uEmail ${BACKUP_DB_ANONYMIZE_USERS_EXCEPT_OPTION};"
   fi
   if [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "YES" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "Yes" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "yes" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "TRUE" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "True" ] || [ "$BACKUP_DB_SET_DEFAULT_FILESTORAGELOCATION" = "true" ]; then
     echo "c5 Import: Setting storage to 'Default'"
-    mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE FileStorageLocations SET fslIsDefault='0';UPDATE FileStorageLocations SET fslIsDefault='1' WHERE fslID='1';"
+    mysql -h ${BACKUP_DB_HOST} --port=${BACKUP_DB_PORT} -u ${BACKUP_DB_USERNAME} --default-character-set=${MYSQL_CHARASET} --database=${BACKUP_DB_DATABASE} -e "UPDATE FileStorageLocations SET fslIsDefault='0';UPDATE FileStorageLocations SET fslIsDefault='1' WHERE fslID='1';"
   fi
 }
 
@@ -727,7 +727,7 @@ do_dev_db_backup() {
     SQL_FILE="${PROJECT_NAME}_dev_${NOW_TIME}.sql"
     if [ -n "$BACKUP_DB_PASSWORD" ]; then
         set +e
-        mysqldump -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --single-transaction --default-character-set=${MYSQL_CHARASET} ${BACKUP_MYSQLDUMP_OPTION_TABLESPACE} "${BACKUP_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+        mysqldump -h ${BACKUP_DB_HOST} --port=${BACKUP_DB_PORT} -u ${BACKUP_DB_USERNAME} --password=${BACKUP_DB_PASSWORD} --single-transaction --default-character-set=${MYSQL_CHARASET} ${BACKUP_MYSQLDUMP_OPTION_TABLESPACE} "${BACKUP_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
         ret=$?
         if [ "$ret" = 0 ]; then
             echo ""
@@ -735,12 +735,12 @@ do_dev_db_backup() {
         else
             echo "c5 Backup: ERROR: MySQL password failed. You must type MySQL password manually. OR hit ENTER if you want to stop this script now."
             set -e
-            mysqldump -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --single-transaction --default-character-set=${MYSQL_CHARASET} ${BACKUP_MYSQLDUMP_OPTION_TABLESPACE} "${BACKUP_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+            mysqldump -h ${BACKUP_DB_HOST} --port=${BACKUP_DB_PORT} -u ${BACKUP_DB_USERNAME} -p --single-transaction --default-character-set=${MYSQL_CHARASET} ${BACKUP_MYSQLDUMP_OPTION_TABLESPACE} "${BACKUP_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
         fi
         set -e
     else
         echo "c5 Backup: Enter the MySQL password..."
-        mysqldump -h ${BACKUP_DB_HOST} --port=${BACKUP_MYSQL_PORT} -u ${BACKUP_DB_USERNAME} -p --single-transaction --default-character-set=${MYSQL_CHARASET} ${BACKUP_MYSQLDUMP_OPTION_TABLESPACE} "${BACKUP_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
+        mysqldump -h ${BACKUP_DB_HOST} --port=${BACKUP_DB_PORT} -u ${BACKUP_DB_USERNAME} -p --single-transaction --default-character-set=${MYSQL_CHARASET} ${BACKUP_MYSQLDUMP_OPTION_TABLESPACE} "${BACKUP_DB_DATABASE}" > "${WHERE_TO_SAVE}"/"${SQL_FILE}"
     fi
 }
 
