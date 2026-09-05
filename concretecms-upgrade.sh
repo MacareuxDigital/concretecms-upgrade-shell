@@ -117,6 +117,7 @@ if [ "$(printf '%s\n' "$requiredver" "${C5_Version}" | sort -V | head -n1)" = "$
   echo "Greater than or equal to ${requiredver}. We are proceeding"
 else
   echo "Less than ${requiredver}"
+  exit 1
 fi
 
 requiredver="8.5.8"
@@ -371,6 +372,7 @@ send_back() {
     }
 
 do_all(){
+    DO_EVERYTHING="Yes"
     backup_type="3"
     do_backup
     do_import
@@ -415,19 +417,21 @@ do_import() {
     echo " ========================================"
     echo 
     set_prod_db_details
-    if [ "$DO_EVERYTHING" != "Yes" ]; then
-    send_back() {
-        show_import
-    }
-    show_input(){
+    if [ "$DO_EVERYTHING" = "Yes" ]; then
         do_db_import
-    }
-    send_forward() {
-        do_db_backup
-        do_db_import
-    }
-    echo "Would you like to backup the local database"
-    manual_input
+    else
+        send_back() {
+            show_import
+        }
+        show_input(){
+            do_db_import
+        }
+        send_forward() {
+            do_db_backup
+            do_db_import
+        }
+        echo "Would you like to backup the local database"
+        manual_input
     fi
 }
 
@@ -456,23 +460,26 @@ do_prod_db_backup() {
 
 do_db_import() {
     set_backup_directory
-    send_back() {
-        do_import
-    }
-    show_input() {
+    if [ "$DO_EVERYTHING" = "Yes" ]; then
         USE_IMPORT_FILE="No"
-    }
-    send_forward() {
-        USE_IMPORT_FILE="Yes"
-    }
-    echo "Would you like to import from a file?"
-    manual_input
-    SQL_FILE="${PROJECT_NAME}_prod_${NOW_TIME}.sql"
-    if [ "${USE_IMPORT_FILE}" != "Yes" ] || [ "${USE_IMPORT_FILE}" != "YES" ] || [ "${USE_IMPORT_FILE}" != "yes" ] || [ "${USE_IMPORT_FILE}" != "TRUE" ] || [ "${USE_IMPORT_FILE}" != "True" ] || [ "${USE_IMPORT_FILE}" != "true" ]; then
-        do_prod_db_backup
-    else 
-        set_import_file_location
+    else
+        send_back() {
+            do_import
+        }
+        show_input() {
+            USE_IMPORT_FILE="No"
+        }
+        send_forward() {
+            USE_IMPORT_FILE="Yes"
+        }
+        echo "Would you like to import from a file?"
+        manual_input
     fi
+    SQL_FILE="${PROJECT_NAME}_prod_${NOW_TIME}.sql"
+    case "${USE_IMPORT_FILE}" in
+        [Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Yy]) set_import_file_location ;;
+        *) do_prod_db_backup ;;
+    esac
     set_develop_db_details
     echo "c5 Import: Beginning import process..."
     if [ "$BACKUP_DB_EMPTY_DB" = "YES" ] || [ "$BACKUP_DB_EMPTY_DB" = "Yes" ] || [ "$BACKUP_DB_EMPTY_DB" = "yes" ] || [ "$BACKUP_DB_EMPTY_DB" = "TRUE" ] || [ "$BACKUP_DB_EMPTY_DB" = "True" ] || [ "$BACKUP_DB_EMPTY_DB" = "true" ]; then
